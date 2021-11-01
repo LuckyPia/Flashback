@@ -1,0 +1,6 @@
+framework module Flashback {
+  umbrella header "Flashback-umbrella.h"
+
+  export *
+  module * { export * }
+}

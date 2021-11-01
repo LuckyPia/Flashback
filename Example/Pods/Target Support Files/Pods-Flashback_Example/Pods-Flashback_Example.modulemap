@@ -1,0 +1,6 @@
+framework module Pods_Flashback_Example {
+  umbrella header "Pods-Flashback_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

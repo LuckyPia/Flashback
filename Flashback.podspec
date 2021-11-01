@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = 'Flashback'
-  s.version          = '0.1.0'
-  s.summary          = 'A short description of Flashback.'
+  s.version          = '1.0.0'
+  s.summary          = 'Flash Back!'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -21,20 +21,20 @@ Pod::Spec.new do |s|
 TODO: Add long description of the pod here.
                        DESC
 
-  s.homepage         = 'https://github.com/664454335@qq.com/Flashback'
+  s.homepage         = 'https://github.com/LuckyPia/Flashback'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { '664454335@qq.com' => 'puyadong' }
-  s.source           = { :git => 'https://github.com/664454335@qq.com/Flashback.git', :tag => s.version.to_s }
+  s.author           = { 'LuckyPia' => '664454335@qq.com' }
+  s.source           = { :git => 'https://github.com/LuckyPia/Flashback.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '9.0'
 
   s.source_files = 'Flashback/Classes/**/*'
   
-  # s.resource_bundles = {
-  #   'Flashback' => ['Flashback/Assets/*.png']
-  # }
+   s.resource_bundles = {
+     'Flashback' => ['Flashback/Assets/*.png']
+   }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'

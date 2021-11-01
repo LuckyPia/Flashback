@@ -1,0 +1,22 @@
+{
+  "name": "Flashback",
+  "version": "0.1.0",
+  "summary": "A short description of Flashback.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/664454335@qq.com/Flashback",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "664454335@qq.com": "puyadong"
+  },
+  "source": {
+    "git": "https://github.com/664454335@qq.com/Flashback.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "9.0"
+  },
+  "source_files": "Flashback/Classes/**/*"
+}

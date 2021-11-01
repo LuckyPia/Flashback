@@ -1,0 +1,16 @@
+PODS:
+  - Flashback (0.1.0)
+
+DEPENDENCIES:
+  - Flashback (from `../`)
+
+EXTERNAL SOURCES:
+  Flashback:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Flashback: bad2582830e1ab0efac1c8a46d8800c6fd22b878
+
+PODFILE CHECKSUM: 06a5e6aff52a4ecc67f62988a0afe50b7a46f94b
+
+COCOAPODS: 1.11.2
