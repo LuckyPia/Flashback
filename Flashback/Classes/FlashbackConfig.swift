@@ -32,16 +32,16 @@ public struct FlashbackConfig {
     /// 透明度
     public var opacity: CGFloat = 1
     /// 指示器图片
-    public var indicatorImage: UIImage = UIImage(named: "right_arrow")! {
+    public var indicatorImage: UIImage = UIImage(named: "flashback_right_arrow")! {
         didSet {
             self.leftIndicatorImage = indicatorImage.withRenderingMode(.alwaysTemplate)
             self.rightIndicatorImage = UIImage(cgImage: self.indicatorImage.cgImage!, scale: 1, orientation: .upMirrored).withRenderingMode(.alwaysTemplate)
         }
     }
     /// 左边指示器图片
-    public var leftIndicatorImage: UIImage = UIImage(named: "right_arrow")!.withRenderingMode(.alwaysTemplate)
+    public var leftIndicatorImage: UIImage = UIImage(named: "flashback_right_arrow")!.withRenderingMode(.alwaysTemplate)
     /// 右边指示器图片
-    public var rightIndicatorImage: UIImage = UIImage(cgImage: UIImage(named: "right_arrow")!.cgImage!, scale: 1, orientation: .upMirrored).withRenderingMode(.alwaysTemplate)
+    public var rightIndicatorImage: UIImage = UIImage(cgImage: UIImage(named: "flashback_right_arrow")!.cgImage!, scale: 1, orientation: .upMirrored).withRenderingMode(.alwaysTemplate)
     /// 指示器大小
     public var indicatorSize: CGSize = .init(width: 15, height: 15)
     /// 指示器颜色
