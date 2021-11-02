@@ -1,22 +1,33 @@
 {
   "name": "Flashback",
-  "version": "0.1.0",
-  "summary": "A short description of Flashback.",
+  "version": "1.0.0",
+  "summary": "iOS侧滑返回组件",
   "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/664454335@qq.com/Flashback",
+  "homepage": "https://github.com/LuckyPia/Flashback",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
   },
   "authors": {
-    "664454335@qq.com": "puyadong"
+    "LuckyPia": "664454335@qq.com"
   },
   "source": {
-    "git": "https://github.com/664454335@qq.com/Flashback.git",
-    "tag": "0.1.0"
+    "git": "https://github.com/LuckyPia/Flashback.git",
+    "tag": "1.0.0"
   },
   "platforms": {
-    "ios": "9.0"
+    "ios": "10.0"
   },
-  "source_files": "Flashback/Classes/**/*"
+  "swift_versions": "5.0",
+  "source_files": "Flashback/Classes/**/*",
+  "resource_bundles": {
+    "Flashback": [
+      "Flashback/Assets/*.png"
+    ]
+  },
+  "frameworks": [
+    "UIKit",
+    "AudioToolbox"
+  ],
+  "swift_version": "5.0"
 }

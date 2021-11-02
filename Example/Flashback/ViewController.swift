@@ -2,11 +2,12 @@
 //  ViewController.swift
 //  Flashback
 //
-//  Created by 664454335@qq.com on 11/01/2021.
-//  Copyright (c) 2021 664454335@qq.com. All rights reserved.
+//  Created by LuckyPia on 11/01/2021.
+//  Copyright (c) 2021 LuckyPia. All rights reserved.
 //
 
 import UIKit
+import Flashback
 
 class ViewController: UIViewController {
 
@@ -63,11 +64,11 @@ class ViewController: UIViewController {
     }
     
     @objc func onPush() {
-        self.navigationController?.pushViewController(DemoViewController(), animated: true)
+        self.navigationController?.pushViewController(ViewController(), animated: true)
     }
     
     @objc func onPresent() {
-        self.present(DemoViewController(), animated: true)
+        self.present(ViewController(), animated: true)
     }
     
     @objc func onVibrate() {

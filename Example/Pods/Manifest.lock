@@ -1,5 +1,5 @@
 PODS:
-  - Flashback (0.1.0)
+  - Flashback (1.0.0)
 
 DEPENDENCIES:
   - Flashback (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Flashback: bad2582830e1ab0efac1c8a46d8800c6fd22b878
+  Flashback: ff395fff0205b80a7f656475286797685f4c9422
 
 PODFILE CHECKSUM: 06a5e6aff52a4ecc67f62988a0afe50b7a46f94b
 
