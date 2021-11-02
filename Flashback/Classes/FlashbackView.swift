@@ -81,6 +81,7 @@ class FlashbackView: UIView {
     lazy var imageView: UIImageView = {
         let view = UIImageView()
         view.frame = CGRect.init(origin: .zero, size: config.indicatorSize)
+        view.contentMode = .scaleAspectFit
         view.isHidden = true
         return view
     }()
