@@ -16,14 +16,12 @@ import UIKit
 // MARK: 默认实现
 extension UIViewController: FlashbackDelegate {
     open func onFlashBack() {
-        if self.navigationController?.topViewController == self {
-            // pop
-            print("pop")
-            self.navigationController?.popViewController(animated: true)
-        }else {
+        if self.presentingViewController != nil {
             // dismiss
-            print("dismiss")
             self.dismiss(animated: true)
+        }else {
+            // pop
+            self.navigationController?.popViewController(animated: true)
         }
     }
 }
