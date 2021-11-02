@@ -22,6 +22,7 @@ class ViewController: UIViewController {
         tableView.sectionHeaderHeight = 0
         tableView.sectionFooterHeight = 0
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DemoCell")
+        tableView.tableFooterView = UIView()
         return tableView
     }()
     
@@ -102,15 +103,11 @@ class ViewController: UIViewController {
         }
     }
     
-    
-
-}
-
-extension ViewController {
     /// 重写返回
     override func onFlashBack() {
         super.onFlashBack()
     }
+
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {

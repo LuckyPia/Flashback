@@ -39,7 +39,7 @@ class FlashbackView: UIView {
             self.drag(width: indicatorWidth)
             // 震动
             if config.vibrateEnable && oldValue < config.minWidth && indicatorWidth >= config.minWidth {
-                AudioServicesPlayAlertSound(SystemSoundID(1519))
+                AudioServicesPlayAlertSound(SystemSoundID(1520))
             }
         }
     }
@@ -266,7 +266,7 @@ class FlashbackView: UIView {
         if self.indicatorWidth >= config.minWidth {
             // 震动
             if config.vibrateEnable {
-                AudioServicesPlayAlertSound(SystemSoundID(1520))
+                AudioServicesPlayAlertSound(SystemSoundID(1519))
             }
             doBack()
         }

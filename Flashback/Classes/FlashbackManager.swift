@@ -17,7 +17,7 @@ public class FlashbackManager: NSObject {
     
     private override init() { }
     
-    /// 返回通知名
+    /// 闪回通知名
     public let FlashbackNotificationName: NSNotification.Name = .init(rawValue: "FlashbackNotificationName")
     
     /// 配置
@@ -85,25 +85,25 @@ public class FlashbackManager: NSObject {
     
     /// 当前控制器
     class func currentVC() -> UIViewController? {
-        var keyWindow: UIWindow?
-        if #available(iOS 15.0, *) {
-            let windows = UIApplication.shared.connectedScenes
-                .filter{ $0.activationState == .foregroundActive }
-                .first(where: { $0 is UIWindowScene })
-                .flatMap({ $0 as? UIWindowScene })?.windows
-            keyWindow = windows?.first(where: { $0.windowLevel == .normal && !$0.isKind(of: FlashbackWindow.self)} )
-        }else {
-            keyWindow = UIApplication.shared.windows
-                .filter{ $0.windowLevel == .normal && !$0.isKind(of: FlashbackWindow.self) }
-                .first
+        var window = UIApplication.shared.keyWindow
+        if window?.windowLevel != UIWindow.Level.normal{
+            let windows = UIApplication.shared.windows
+            for  windowTemp in windows{
+                if windowTemp.windowLevel == UIWindow.Level.normal{
+                    window = windowTemp
+                    break
+                }
+            }
         }
-
-        let rootViewController: UIViewController? = keyWindow?.rootViewController
-        return topVC(of: rootViewController)
+        let vc = window?.rootViewController
+        return topVC(of: vc)
     }
     
     /// 私有递归查找最顶级视图
     class func topVC(of viewController: UIViewController?) -> UIViewController? {
+        if viewController == nil {
+            return nil
+        }
         if let presentedViewController = viewController?.presentedViewController {
             return topVC(of: presentedViewController)// presented的VC
         }

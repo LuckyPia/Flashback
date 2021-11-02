@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  Flashback
 //
-//  Created by 664454335@qq.com on 11/01/2021.
-//  Copyright (c) 2021 664454335@qq.com. All rights reserved.
+//  Created by LuckyPia on 11/01/2021.
+//  Copyright (c) 2021 LuckyPia. All rights reserved.
 //
 
 import UIKit
@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = UINavigationController.init(rootViewController: ViewController())
+        window?.rootViewController = UINavigationController(rootViewController: ViewController())
         window?.makeKeyAndVisible()
         
         var config = FlashbackConfig.default
