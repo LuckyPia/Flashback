@@ -10,7 +10,7 @@ import UIKit
 /// 闪回管理器
 public class FlashbackManager: NSObject {
     
-    typealias BackAction = FlashbackItem.BackAction
+    public typealias BackAction = FlashbackItem.BackAction
     
     /// 单例
     public static let shared: FlashbackManager = .init()
@@ -60,7 +60,7 @@ public class FlashbackManager: NSObject {
     }
     
     /// 添加返回栈
-    func addFlahback(_ target: Any?, action: @escaping BackAction) {
+    public func addFlahback(_ target: Any?, action: @escaping BackAction) {
         self.backStack.append(FlashbackItem(target: target, action: action))
     }
     
