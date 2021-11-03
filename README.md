@@ -9,8 +9,8 @@
 ## 效果图
 <table>
     <tr>
-        <td><img src="https://github.com/LuckyPia/Flashback/blob/master/IMG_1587.png" /></td>
-        <td><img src="https://github.com/LuckyPia/Flashback/blob/master/IMG_1588.png" /></td>
+        <td><img src="./IMG_1587.png" /></td>
+        <td><img src="./IMG_1588.png" /></td>
     </tr>
 </table>
 
