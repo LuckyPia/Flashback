@@ -7,14 +7,12 @@
 [![Platform](https://img.shields.io/cocoapods/p/Flashback.svg?style=flat)](https://cocoapods.org/pods/Flashback)
 
 ## 效果图
-```html
 <table>
     <tr>
         <td><img src="https://github.com/LuckyPia/Flashback/blob/master/IMG_1587.png" /></td>
         <td><img src="https://github.com/LuckyPia/Flashback/blob/master/IMG_1588.png" /></td>
     </tr>
 </table>
-```
 
 ## 前言
 
