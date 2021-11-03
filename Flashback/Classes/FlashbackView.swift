@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import AudioToolbox
 
 // MARK: 闪回视图
 /// 闪回视图
@@ -274,9 +273,9 @@ class FlashbackView: UIView {
     func needBack() {
         // 大于最小宽度，才执行返回
         if self.indicatorWidth >= config.minWidth {
-            // 震动，从开始间隔大于0.2秒才有结束震动
+            // 震动，从开始间隔大于0.15秒才有结束震动
             if  config.vibrateEnable &&
-                    Date().timeIntervalSince1970 - self.startVibrateTimeInterval > 0.2 {
+                    Date().timeIntervalSince1970 - self.startVibrateTimeInterval > 0.15 {
                 UIImpactFeedbackGenerator(style: config.vibrateStyle).impactOccurred()
             }
             doBack()

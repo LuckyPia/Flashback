@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         config.style = .custom
         config.color = .black
         config.indicatorColor = .yellow
-        config.scrollEnable = true
+        config.scrollEnable = false
         config.ignoreTopHeight = 150
         FlashbackManager.shared.config = config
         FlashbackManager.shared.isEnable = true

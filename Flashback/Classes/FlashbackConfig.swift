@@ -21,7 +21,7 @@ public struct FlashbackConfig {
     /// 指示器高度
     public var height: CGFloat = 320
     /// 返回所需最小宽度
-    public var minWidth: CGFloat = 15
+    public var minWidth: CGFloat = 20
     /// 最大宽度
     public var maxWidth: CGFloat = 30
     /// 边缘曲率
