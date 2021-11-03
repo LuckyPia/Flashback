@@ -96,9 +96,9 @@ extension ViewController {
 
 ```swift
 FlashbackManager.shared.addFlahback(self) { [weak self] in
-        guard let `self` = self else { return }
-        self.navigationController?.popViewController(animated: true)
-        return true
+    guard let `self` = self else { return }
+    self.navigationController?.popViewController(animated: true)
+    return true
 }
 ```
 
@@ -114,9 +114,9 @@ FlashbackManager.shared.config.backMode = .notify
 
 // 通知回调
 NotificationCenter.default.addObserver(forName: FlashbackManager.FlashbackNotificationName, object: nil, queue: nil) { [weak self] _ in
-        guard let `self` = self else { return }
-        // 执行返回逻辑
-        self.navigationController?.popViewController(animated: true)
+    guard let `self` = self else { return }
+    // 执行返回逻辑
+    self.navigationController?.popViewController(animated: true)
 }
 ```
 
