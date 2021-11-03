@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: 闪回管理器
 /// 闪回管理器
 public class FlashbackManager: NSObject {
     
@@ -18,7 +19,7 @@ public class FlashbackManager: NSObject {
     private override init() { }
     
     /// 闪回通知名
-    public let FlashbackNotificationName: NSNotification.Name = .init(rawValue: "FlashbackNotificationName")
+    public static let FlashbackNotificationName: NSNotification.Name = .init(rawValue: "FlashbackNotificationName")
     
     /// 配置
     public var config: FlashbackConfig = .default {
@@ -60,6 +61,9 @@ public class FlashbackManager: NSObject {
     }
     
     /// 添加返回栈
+    /// - Parameters:
+    ///   - target: 目标，如果为nil则会被移除
+    ///   - action: 返回动作闭包，闭包返回true才从返回栈移除
     public func addFlahback(_ target: Any?, action: @escaping BackAction) {
         self.backStack.append(FlashbackItem(target: target, action: action))
     }
@@ -73,18 +77,20 @@ public class FlashbackManager: NSObject {
                     self.backStack.removeLast()
                     self.doBack()
                 }
-                stackTop.action()
-                self.backStack.removeLast()
+                // 返回true才从返回栈移除
+                if stackTop.action() {
+                    self.backStack.removeLast()
+                }
             }else {
                 FlashbackManager.currentVC()?.onFlashBack()
             }
         case .notify:
-            NotificationCenter.default.post(name: FlashbackNotificationName, object: nil)
+            NotificationCenter.default.post(name: FlashbackManager.FlashbackNotificationName, object: nil)
         }
     }
     
     /// 当前控制器
-    class func currentVC() -> UIViewController? {
+    public class func currentVC() -> UIViewController? {
         var window = UIApplication.shared.keyWindow
         if window?.windowLevel != UIWindow.Level.normal{
             let windows = UIApplication.shared.windows

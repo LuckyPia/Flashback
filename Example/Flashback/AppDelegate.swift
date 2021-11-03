@@ -20,9 +20,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         
         var config = FlashbackConfig.default
+        config.enablePositions = [.left, .right]
+        config.triggerRange = 20
+        config.vibrateEnable = true
+        config.vibrateStyle = .light
         config.style = .custom
         config.color = .black
         config.indicatorColor = .yellow
+        config.scrollEnable = true
+        config.ignoreTopHeight = 150
         FlashbackManager.shared.config = config
         FlashbackManager.shared.isEnable = true
         

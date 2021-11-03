@@ -11,7 +11,13 @@ import Flashback
 
 class ViewController: UIViewController {
 
-    lazy var items: [ItemType] = ItemType.allCases
+    lazy var items: [ItemType] = {
+        var list = ItemType.allCases
+        if self.presentingViewController != nil {
+            list.removeFirst()
+        }
+        return list
+    }()
     
     lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -137,11 +143,38 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         case .vibrate:
             self.onVibrate()
             break
+        case .vibrateStyle:
+            switch FlashbackManager.shared.config.vibrateStyle {
+            case .light:
+                if #available(iOS 13.0, *) {
+                    FlashbackManager.shared.config.vibrateStyle = .soft
+                } else {
+                    FlashbackManager.shared.config.vibrateStyle = .heavy
+                }
+            case .soft:
+                if #available(iOS 13.0, *) {
+                    FlashbackManager.shared.config.vibrateStyle = .heavy
+                } else {
+                    // Fallback on earlier versions
+                }
+            case .rigid:
+                FlashbackManager.shared.config.vibrateStyle = .heavy
+            case .heavy:
+                FlashbackManager.shared.config.vibrateStyle = .medium
+            case .medium:
+                FlashbackManager.shared.config.vibrateStyle = .light
+            @unknown default:
+                FlashbackManager.shared.config.vibrateStyle = .light
+            }
+            break
         case .leftPositionEnable:
             self.onPositionEnable(.left)
             break
         case .rightPositionEnable:
             self.onPositionEnable(.right)
+            break
+        case .scrollEnable:
+            FlashbackManager.shared.config.scrollEnable = !FlashbackManager.shared.config.scrollEnable
             break
         }
         self.tableView.reloadData()
@@ -155,14 +188,18 @@ enum ItemType: CaseIterable {
     case push
     /// present
     case present
+    /// 样式
+    case style
     /// 震动
     case vibrate
+    /// 震动强度
+    case vibrateStyle
     /// 左侧启用
     case leftPositionEnable
     /// 右侧启用
     case rightPositionEnable
-    /// 样式
-    case style
+    /// 可滑动
+    case scrollEnable
     
     var title: String {
         switch self {
@@ -174,10 +211,29 @@ enum ItemType: CaseIterable {
             return "Present"
         case .vibrate:
             return "震动（\(FlashbackManager.shared.config.vibrateEnable ? "开" : "关")）"
+        case .vibrateStyle:
+            var name = "unknown"
+            switch FlashbackManager.shared.config.vibrateStyle {
+            case .light:
+                name = "light"
+            case .soft:
+                name = "soft"
+            case .rigid:
+                name = "rigid"
+            case .heavy:
+                name = "heavy"
+            case .medium:
+                name = "medium"
+            @unknown default:
+                name = "unknown"
+            }
+            return "震动强度（\(name)）"
         case .leftPositionEnable:
             return "左侧启用（\(FlashbackManager.shared.config.enablePositions.contains(.left) ? "开" : "关")）"
         case .rightPositionEnable:
             return "右侧启用（\(FlashbackManager.shared.config.enablePositions.contains(.right) ? "开" : "关")）"
+        case .scrollEnable:
+            return "可滑动（\(FlashbackManager.shared.config.scrollEnable ? "开" : "关")）"
         }
     }
 }

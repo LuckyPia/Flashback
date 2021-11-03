@@ -8,6 +8,8 @@
 import UIKit
 import AudioToolbox
 
+// MARK: 闪回视图
+/// 闪回视图
 class FlashbackView: UIView {
     
     typealias Position = FlashbackConfig.Position
@@ -25,6 +27,9 @@ class FlashbackView: UIView {
     /// 拖拽开始y轴
     var startY: CGFloat = 0
     
+    /// 开始震动时间，时间太短没有结束震动
+    var startVibrateTimeInterval: TimeInterval = 0
+    
     /// 拖拽X轴偏移
     var offsetX: CGFloat = 0 {
         didSet {
@@ -36,10 +41,10 @@ class FlashbackView: UIView {
     var indicatorWidth: CGFloat = 0 {
         didSet {
             self.setImageView()
-            self.drag(width: indicatorWidth)
+            self.drawCurve()
             // 震动
             if config.vibrateEnable && oldValue < config.minWidth && indicatorWidth >= config.minWidth {
-                AudioServicesPlayAlertSound(SystemSoundID(1520))
+                UIImpactFeedbackGenerator(style: config.vibrateStyle).impactOccurred()
             }
         }
     }
@@ -54,13 +59,15 @@ class FlashbackView: UIView {
         self.releaseDisplayLink()
     }
     
-    lazy var swipe: UIPanGestureRecognizer = {
-        let swipe = UIPanGestureRecognizer.init(target: self, action: #selector(swipe(_:)))
+    /// 拖动手势
+    lazy var panGesture: UIPanGestureRecognizer = {
+        let swipe = UIPanGestureRecognizer(target: self, action: #selector(swipe(_:)))
         swipe.minimumNumberOfTouches = 1
         swipe.maximumNumberOfTouches = 1
         return swipe
     }()
     
+    /// 内容视图
     lazy var contentView: UIView = {
         let view = UIView()
         return view
@@ -72,23 +79,19 @@ class FlashbackView: UIView {
         return  view
     }()
     
+    /// 形状
     lazy var shapeLayer: CAShapeLayer = {
         let shapeLayer = CAShapeLayer()
         shapeLayer.fillColor = UIColor.white.cgColor
         return shapeLayer
     }()
     
+    /// 指示器图片
     lazy var imageView: UIImageView = {
         let view = UIImageView()
-        view.frame = CGRect.init(origin: .zero, size: config.indicatorSize)
+        view.frame = CGRect(origin: .zero, size: config.indicatorSize)
         view.contentMode = .scaleAspectFit
         view.isHidden = true
-        return view
-    }()
-    
-    lazy var testView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .red
         return view
     }()
     
@@ -106,7 +109,7 @@ class FlashbackView: UIView {
         addSubview(contentView)
         contentView.addSubview(blurView)
         contentView.addSubview(imageView)
-        addGestureRecognizer(swipe)
+        addGestureRecognizer(panGesture)
         contentView.layer.mask = shapeLayer
         reinitIndicator()
         
@@ -174,6 +177,7 @@ class FlashbackView: UIView {
         let offsetX = panGes.translation(in: self).x
         switch panGes.state {
         case .began:
+            self.startVibrateTimeInterval = Date().timeIntervalSince1970
             self.releaseDisplayLink()
             let locationPoint = panGes.location(in: panGes.view)
             if locationPoint.x < self.bounds.width / 2 {
@@ -199,12 +203,17 @@ class FlashbackView: UIView {
             displayLink?.add(to: .current, forMode: .common)
         default:
             self.offsetX = offsetX
+            // 上下滚动可用
+            if config.scrollEnable {
+                let locationPoint = panGes.location(in: panGes.view)
+                self.startY = locationPoint.y
+            }
         }
         
     }
     
-    /// 拖拽
-    func drag(width: CGFloat) {
+    /// 绘制曲线
+    func drawCurve() {
         let path = UIBezierPath()
         
         var startPoint :CGPoint
@@ -217,21 +226,21 @@ class FlashbackView: UIView {
         var controlPoint4: CGPoint
         if startPosition == .left {
             startPoint = CGPoint(x: 0, y: startY - config.height / 2)
-            centerPoint = CGPoint(x: 0 + width, y: startY)
+            centerPoint = CGPoint(x: 0 + self.indicatorWidth, y: startY)
             endPoint = CGPoint(x: 0, y: startY + config.height / 2)
             
             controlPoint1 = CGPoint(x: 0, y: startPoint.y + config.edgeCurvature)
-            controlPoint2 = CGPoint(x: 0 + width, y: centerPoint.y - config.centerCurvature)
-            controlPoint3 = CGPoint(x: 0 + width, y: centerPoint.y + config.centerCurvature)
+            controlPoint2 = CGPoint(x: 0 + self.indicatorWidth, y: centerPoint.y - config.centerCurvature)
+            controlPoint3 = CGPoint(x: 0 + self.indicatorWidth, y: centerPoint.y + config.centerCurvature)
             controlPoint4 = CGPoint(x: 0, y: endPoint.y - config.edgeCurvature)
         }else {
             startPoint = CGPoint(x: bounds.width, y: startY - config.height / 2)
-            centerPoint = CGPoint(x: bounds.width - width, y: startY)
+            centerPoint = CGPoint(x: bounds.width - self.indicatorWidth, y: startY)
             endPoint = CGPoint(x: bounds.width, y: startY + config.height / 2)
             
             controlPoint1 = CGPoint(x: bounds.width, y: startPoint.y + config.edgeCurvature)
-            controlPoint2 = CGPoint(x: bounds.width - width, y: centerPoint.y - config.centerCurvature)
-            controlPoint3 = CGPoint(x: bounds.width - width, y: centerPoint.y + config.centerCurvature)
+            controlPoint2 = CGPoint(x: bounds.width - self.indicatorWidth, y: centerPoint.y - config.centerCurvature)
+            controlPoint3 = CGPoint(x: bounds.width - self.indicatorWidth, y: centerPoint.y + config.centerCurvature)
             controlPoint4 = CGPoint(x: bounds.width, y: endPoint.y - config.edgeCurvature)
         }
         
@@ -263,10 +272,12 @@ class FlashbackView: UIView {
     
     /// 判断是否需要返回
     func needBack() {
+        // 大于最小宽度，才执行返回
         if self.indicatorWidth >= config.minWidth {
-            // 震动
-            if config.vibrateEnable {
-                AudioServicesPlayAlertSound(SystemSoundID(1519))
+            // 震动，从开始间隔大于0.2秒才有结束震动
+            if  config.vibrateEnable &&
+                    Date().timeIntervalSince1970 - self.startVibrateTimeInterval > 0.2 {
+                UIImpactFeedbackGenerator(style: config.vibrateStyle).impactOccurred()
             }
             doBack()
         }

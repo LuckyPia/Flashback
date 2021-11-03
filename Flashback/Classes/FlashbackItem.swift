@@ -5,10 +5,11 @@
 //  Created by LuckyPia on 2021/10/29.
 //
 
-// MARK: 返回项
+// MARK: 闪回回调项
+/// 闪回回调项
 public class FlashbackItem: NSObject {
     
-    public typealias BackAction = () -> Void
+    public typealias BackAction = () -> Bool
     
     /// 目标
     public var target: Any?

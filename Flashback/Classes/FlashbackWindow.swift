@@ -7,6 +7,8 @@
 
 import UIKit
 
+// MARK: 闪回窗口
+/// 闪回窗口
 class FlashbackWindow: UIWindow {
     
     /// 配置
