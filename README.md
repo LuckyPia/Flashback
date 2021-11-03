@@ -1,4 +1,4 @@
-# Flashback - iOS侧滑返回组件
+# Flashback - iOS仿Android手势返回
 
 [![iOS Version](https://img.shields.io/badge/iOS-10.0%2B-blueviolet)](https://cocoapods.org/pods/Flashback)
 [![Language](https://img.shields.io/badge/language-swift-ff69b4)](https://cocoapods.org/pods/Flashback)
