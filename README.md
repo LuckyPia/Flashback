@@ -62,7 +62,7 @@ config.vibrateStyle = .light
 // 指示器样式
 config.style = .custom
 // 指示器背景颜色
-config.color = .black
+config.backgroundColor = .black
 // 指示器图片颜色
 config.indicatorColor = .yellow
 // 上下滚动开启
