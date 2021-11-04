@@ -95,14 +95,19 @@ extension ViewController {
 4. 可自定义返回栈
 
 ```swift
-FlashbackManager.shared.addFlahback(self) { [weak self] in
-    guard let `self` = self else { return }
-    self.navigationController?.popViewController(animated: true)
+let alert = AlertView()
+alert.show()
+// 请注意alert为weak, 否则会因强应用，而导致对象无法释放
+FlashbackManager.shared.addFlahback(alert) { [weak alert] in
+    guard let `alert` = alert else { return true }
+    alert.dismiss()
     return true
 }
 ```
 
-**注意**：仅在`backMode`为`normal`时有效，优先执行返回栈的内容，若`target`为`nil`，则会移除顶项，递归继续执行返回，闭包返回为`true`时执行完移除，为`false`不移除。
+**注意**：
+- 仅在`backMode`为`normal`时有效，优先执行返回栈的内容，若`target`为`nil`，则会移除顶项，递归继续执行返回，闭包返回为`true`时执行完移除，为`false`不移除。
+- 一定要注意`target`的生命周期，若`target`产生强应用未被及时释放，则会导致返回出错。若您的`target`不需要被释放，您可以选择在它消失时手动调用`FlashbackManager.shared.backStack.removeLast()`
 
 
 
