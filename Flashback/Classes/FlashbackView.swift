@@ -74,7 +74,7 @@ class FlashbackView: UIView {
     
     /// 毛玻璃视图
     lazy var blurView: UIVisualEffectView = {
-        let view = UIVisualEffectView(effect: UIBlurEffect(style: config.style.effectStyle))
+        let view = UIVisualEffectView(effect: UIBlurEffect(style: config.blurStyle ?? .dark))
         return  view
     }()
     
@@ -123,38 +123,21 @@ class FlashbackView: UIView {
     /// 设置指示器背景
     func reinitIndicator() {
         switch self.config.style {
-        case .auto:
-            if #available(iOS 12.0, *) {
-                switch self.traitCollection.userInterfaceStyle {
-                case .light:
-                    self.imageView.tintColor = .black
-                    self.blurView.effect = UIBlurEffect(style: .light)
-                case .dark:
-                    self.imageView.tintColor = .white
-                    self.blurView.effect = UIBlurEffect(style: .dark)
-                default:
-                    self.imageView.tintColor = .white
-                    self.blurView.effect = UIBlurEffect(style: .dark)
-                }
-            } else {
-                self.imageView.tintColor = .white
-                self.blurView.effect = UIBlurEffect(style: .dark)
-            }
-            self.blurView.isHidden = false
-            self.contentView.backgroundColor = .clear
         case .white:
+            self.contentView.backgroundColor = .white.withAlphaComponent(config.opacity)
             self.imageView.tintColor = .black
-            self.contentView.backgroundColor = .clear
-            self.blurView.isHidden = false
-            self.blurView.effect = UIBlurEffect(style: config.style.effectStyle)
         case .black:
+            self.contentView.backgroundColor = .black.withAlphaComponent(config.opacity)
             self.imageView.tintColor = .white
-            self.contentView.backgroundColor = .clear
-            self.blurView.isHidden = false
-            self.blurView.effect = UIBlurEffect(style: config.style.effectStyle)
         case .custom:
+            self.contentView.backgroundColor = config.backgroundColor.withAlphaComponent(config.opacity)
             self.imageView.tintColor = config.indicatorColor
-            self.contentView.backgroundColor = config.color.withAlphaComponent(config.opacity)
+        }
+        
+        if let blurStyle = config.blurStyle {
+            self.blurView.isHidden = false
+            self.blurView.effect = UIBlurEffect(style: blurStyle)
+        }else {
             self.blurView.isHidden = true
         }
         

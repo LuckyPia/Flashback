@@ -94,18 +94,37 @@ class ViewController: UIViewController {
     
     func onStyle() {
         switch FlashbackManager.shared.config.style {
-        case .auto:
-            FlashbackManager.shared.config.style = .white
         case .white:
             FlashbackManager.shared.config.style = .black
         case .black:
             FlashbackManager.shared.config.style = .custom
         case .custom:
-            if #available(iOS 12.0, *) {
-                FlashbackManager.shared.config.style = .auto
+            FlashbackManager.shared.config.style = .white
+        }
+    }
+    
+    func onVibrateStyle() {
+        switch FlashbackManager.shared.config.vibrateStyle {
+        case .light:
+            if #available(iOS 13.0, *) {
+                FlashbackManager.shared.config.vibrateStyle = .soft
             } else {
-                FlashbackManager.shared.config.style = .white
+                FlashbackManager.shared.config.vibrateStyle = .heavy
             }
+        case .soft:
+            if #available(iOS 13.0, *) {
+                FlashbackManager.shared.config.vibrateStyle = .rigid
+            } else {
+                FlashbackManager.shared.config.vibrateStyle = .heavy
+            }
+        case .rigid:
+            FlashbackManager.shared.config.vibrateStyle = .heavy
+        case .heavy:
+            FlashbackManager.shared.config.vibrateStyle = .medium
+        case .medium:
+            FlashbackManager.shared.config.vibrateStyle = .light
+        @unknown default:
+            FlashbackManager.shared.config.vibrateStyle = .light
         }
     }
     
@@ -113,6 +132,8 @@ class ViewController: UIViewController {
     override func onFlashBack() {
         super.onFlashBack()
     }
+    
+    
 
 }
 
@@ -144,28 +165,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             self.onVibrate()
             break
         case .vibrateStyle:
-            switch FlashbackManager.shared.config.vibrateStyle {
-            case .light:
-                if #available(iOS 13.0, *) {
-                    FlashbackManager.shared.config.vibrateStyle = .soft
-                } else {
-                    FlashbackManager.shared.config.vibrateStyle = .heavy
-                }
-            case .soft:
-                if #available(iOS 13.0, *) {
-                    FlashbackManager.shared.config.vibrateStyle = .heavy
-                } else {
-                    // Fallback on earlier versions
-                }
-            case .rigid:
-                FlashbackManager.shared.config.vibrateStyle = .heavy
-            case .heavy:
-                FlashbackManager.shared.config.vibrateStyle = .medium
-            case .medium:
-                FlashbackManager.shared.config.vibrateStyle = .light
-            @unknown default:
-                FlashbackManager.shared.config.vibrateStyle = .light
-            }
+            self.onVibrateStyle()
             break
         case .leftPositionEnable:
             self.onPositionEnable(.left)

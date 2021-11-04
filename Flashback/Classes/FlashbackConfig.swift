@@ -12,8 +12,10 @@ import UIKit
 public struct FlashbackConfig {
     /// 返回模式
     public var backMode: BackMode = .normal
-    /// 样式（默认黑色模糊）
+    /// 样式
     public var style: Style = .black
+    /// 模糊
+    public var blurStyle: UIBlurEffect.Style? = nil
     /// 启用位置
     public var enablePositions: [Position] = [.left, .right]
     /// 触发范围
@@ -29,7 +31,7 @@ public struct FlashbackConfig {
     /// 中心曲率
     public var centerCurvature: CGFloat = 40
     /// 指示器背景颜色
-    public var color: UIColor = .black
+    public var backgroundColor: UIColor = .clear
     /// 指示器背景透明度
     public var opacity: CGFloat = 1
     /// 指示器图片
@@ -53,9 +55,9 @@ public struct FlashbackConfig {
     public var ignoreTopHeight: CGFloat = 150
     /// 震动启用（默认true）
     public var vibrateEnable: Bool = true
-    /// 震动强度（默认弱）
+    /// 震动强度（推荐soft）
     public var vibrateStyle: UIImpactFeedbackGenerator.FeedbackStyle = .light
-    /// 上下滚动开启
+    /// 上下滚动开启（推荐false）
     public var scrollEnable: Bool = false
     
     /// 默认配置
@@ -88,9 +90,6 @@ public struct FlashbackConfig {
     
     /// 样式
     public enum Style {
-        /// 自动
-        @available(iOS 12.0, *)
-        case auto
         /// 白色
         case white
         /// 黑色
@@ -98,25 +97,9 @@ public struct FlashbackConfig {
         /// 自定义
         case custom
         
-        /// 模糊样式
-        public var effectStyle: UIBlurEffect.Style {
-            switch self {
-            case .auto:
-                return .regular
-            case .white:
-                return .light
-            case .black:
-                return .dark
-            case .custom:
-                return .regular
-            }
-        }
-        
         /// 名称
         public var name: String {
             switch self {
-            case .auto:
-                return "自动"
             case .white:
                 return "白色"
             case .black:

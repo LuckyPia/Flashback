@@ -23,9 +23,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         config.enablePositions = [.left, .right]
         config.triggerRange = 20
         config.vibrateEnable = true
-        config.vibrateStyle = .light
-        config.style = .custom
-        config.color = .black
+        if #available(iOS 13.0, *) {
+            config.vibrateStyle = .soft
+        } else {
+            config.vibrateStyle = .light
+        }
+        config.style = .black
+        config.backgroundColor = .black
         config.indicatorColor = .yellow
         config.scrollEnable = false
         config.ignoreTopHeight = 150
