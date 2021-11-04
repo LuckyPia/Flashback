@@ -11,7 +11,7 @@ import UIKit
 /// 闪回管理器
 public class FlashbackManager: NSObject {
     
-    public typealias BackAction = FlashbackItem.BackAction
+    public typealias BackAction = FlashbackItem<AnyObject>.BackAction
     
     /// 单例
     public static let shared: FlashbackManager = .init()
@@ -29,7 +29,7 @@ public class FlashbackManager: NSObject {
     }
     
     ///  返回栈
-    public var backStack: [FlashbackItem] = []
+    public var backStack: [FlashbackItem<AnyObject>] = []
     
     /// 返回窗口
     lazy var backWindow: FlashbackWindow = {
@@ -64,7 +64,7 @@ public class FlashbackManager: NSObject {
     /// - Parameters:
     ///   - target: 目标，如果为nil则会被移除
     ///   - action: 返回动作闭包，闭包返回true才从返回栈移除
-    public func addFlahback(_ target: Any?, action: @escaping BackAction) {
+    public func addFlahback<T: AnyObject>(_ target: T?, action: @escaping BackAction) {
         self.backStack.append(FlashbackItem(target: target, action: action))
     }
     
@@ -76,6 +76,7 @@ public class FlashbackManager: NSObject {
                 if stackTop.target == nil {
                     self.backStack.removeLast()
                     self.doBack()
+                    return
                 }
                 // 返回true才从返回栈移除
                 if stackTop.action() {
