@@ -1,4 +1,4 @@
-# Flashback - iOS仿Android手势返回
+# Flashback - iOS手势返回
 
 [![iOS Version](https://img.shields.io/badge/iOS-10.0%2B-blueviolet)](https://cocoapods.org/pods/Flashback)
 [![Language](https://img.shields.io/badge/language-swift-ff69b4)](https://cocoapods.org/pods/Flashback)
@@ -16,7 +16,7 @@
 
 ## 前言
 
-iOS的侧滑返回手势很难用有木有，而且只能从左侧返回，因为不是系统级别，也不是强制使用，还有很多App还不支持，只能羡慕Android的返回手势。为了解决该问题而制作的该库，还是希望苹果有一天能够带来系统级别的返回手势。
+iOS的侧滑手势返回很难用有木有，而且只能从左侧返回，因为不是系统级别，也不是强制使用，还有很多App还不支持，只能羡慕Android的手势返回。为了解决该问题而制作的该库，还是希望苹果有一天能够带来系统级别的手势返回。
 
 ## Demo
 
