@@ -72,6 +72,7 @@ public class FlashbackManager: NSObject {
     func doBack() {
         switch config.backMode {
         case .normal:
+            // 如果backStack有数据，则优先执行
             if let stackTop = self.backStack.last {
                 if stackTop.target == nil {
                     self.backStack.removeLast()
