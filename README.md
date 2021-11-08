@@ -105,6 +105,15 @@ FlashbackManager.shared.addFlahback(alert) { [weak alert] in
 }
 ```
 
+6. 可前置处理（统一处理弹窗，减少代码污染）
+```swift
+FlashbackManager.shared.preFlashback = { [weak self] in
+    guard let `self` = self else { return true }
+    // 返回true继续向下执行正常逻辑，返回false终止
+    return true
+}
+```
+
 **注意说明**：
 - 会优先执行`返回栈`的逻辑，所以如果弹窗后，弹窗不消失，再弹出UIViewController，会出现问题
 - 仅在`backMode`为`normal`时有效，优先执行返回栈的内容，若`target`为`nil`，则会移除顶项，递归继续执行返回，闭包返回为`true`时执行完移除，为`false`不移除。
