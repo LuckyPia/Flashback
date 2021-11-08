@@ -28,14 +28,14 @@ public class FlashbackManager: NSObject {
         }
     }
     
+    /// 闪回前置，返回true继续向下执行，返回false终止
+    public var preFlashback: BackAction?
+    
     ///  返回栈
     public var backStack: [FlashbackItem<AnyObject>] = []
     
     /// 返回窗口
-    lazy var backWindow: FlashbackWindow = {
-        let window = FlashbackWindow(frame: UIScreen.main.bounds)
-        return window
-    }()
+    lazy var backWindow: FlashbackWindow = FlashbackWindow(frame: UIScreen.main.bounds)
     
     /// 是否可用
     public var isEnable = false {
@@ -72,6 +72,10 @@ public class FlashbackManager: NSObject {
     func doBack() {
         switch config.backMode {
         case .normal:
+            // 闪回前置，返回true继续向下执行，返回false终止
+            if let flag = preFlashback?(), !flag {
+                return
+            }
             // 如果backStack有数据，则优先执行
             if let stackTop = self.backStack.last {
                 if stackTop.target == nil {
@@ -87,6 +91,7 @@ public class FlashbackManager: NSObject {
                 FlashbackManager.currentVC()?.onFlashBack()
             }
         case .notify:
+            // 一切交由通知接管
             NotificationCenter.default.post(name: FlashbackManager.FlashbackNotificationName, object: nil)
         }
     }
