@@ -126,8 +126,8 @@ class ViewController: UIViewController {
     }
 
     /// 重写返回
-    override func onFlashBack() {
-        super.onFlashBack()
+    override func onFlashback() {
+        super.onFlashback()
     }
 }
 

@@ -102,7 +102,7 @@ public class FlashbackManager: NSObject {
                     backStack.removeLast()
                 }
             } else {
-                currentVC()?.onFlashBack()
+                currentVC()?.onFlashback()
             }
         case .notify:
             // 一切交由通知接管
