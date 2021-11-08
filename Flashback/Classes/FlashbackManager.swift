@@ -28,6 +28,21 @@ public class FlashbackManager: NSObject {
         }
     }
     
+    /// 处理返回的窗口
+    public lazy var window: UIWindow? = {
+        var window = UIApplication.shared.keyWindow
+        if window?.windowLevel != UIWindow.Level.normal{
+            let windows = UIApplication.shared.windows
+            for  windowTemp in windows{
+                if windowTemp.windowLevel == UIWindow.Level.normal{
+                    window = windowTemp
+                    break
+                }
+            }
+        }
+        return window
+    }()
+    
     /// 闪回前置，返回true继续向下执行，返回false终止
     public var preFlashback: BackAction?
     
@@ -88,7 +103,7 @@ public class FlashbackManager: NSObject {
                     self.backStack.removeLast()
                 }
             }else {
-                FlashbackManager.currentVC()?.onFlashBack()
+                currentVC()?.onFlashBack()
             }
         case .notify:
             // 一切交由通知接管
@@ -97,19 +112,9 @@ public class FlashbackManager: NSObject {
     }
     
     /// 当前控制器
-    public class func currentVC() -> UIViewController? {
-        var window = UIApplication.shared.keyWindow
-        if window?.windowLevel != UIWindow.Level.normal{
-            let windows = UIApplication.shared.windows
-            for  windowTemp in windows{
-                if windowTemp.windowLevel == UIWindow.Level.normal{
-                    window = windowTemp
-                    break
-                }
-            }
-        }
+    func currentVC() -> UIViewController? {
         let vc = window?.rootViewController
-        return topVC(of: vc)
+        return FlashbackManager.topVC(of: vc)
     }
     
     /// 私有递归查找最顶级视图

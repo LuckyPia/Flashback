@@ -35,6 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         config.ignoreTopHeight = 150
         FlashbackManager.shared.config = config
         FlashbackManager.shared.isEnable = true
+        FlashbackManager.shared.window = window
         
         return true
     }
