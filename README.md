@@ -1,7 +1,7 @@
 # Flashback - iOS手势返回
 
 [![iOS Version](https://img.shields.io/badge/iOS-10.0%2B-blueviolet)](https://cocoapods.org/pods/Flashback)
-[![Language](https://img.shields.io/badge/language-swift-ff69b4)](https://cocoapods.org/pods/Flashback)
+[![Language](https://img.shields.io/badge/language-swift5.0-ff69b4)](https://cocoapods.org/pods/Flashback)
 [![Flashback Version](https://img.shields.io/cocoapods/v/Flashback.svg?style=flat)](https://cocoapods.org/pods/Flashback)
 [![License](https://img.shields.io/cocoapods/l/Flashback.svg?style=flat)](https://cocoapods.org/pods/Flashback)
 [![Platform](https://img.shields.io/cocoapods/p/Flashback.svg?style=flat)](https://cocoapods.org/pods/Flashback)
@@ -31,7 +31,7 @@ it, simply add the following line to your Podfile:
 pod 'Flashback'
 ```
 
-## Use
+## Get start
 
 1. 启用（必要）
 
@@ -106,7 +106,12 @@ FlashbackManager.shared.addFlahback(alert) { [weak alert] in
 }
 ```
 
-6. 可前置处理（统一处理弹窗，减少代码污染）
+**注意说明**：
+- 会优先执行`返回栈`的逻辑，所以如果弹窗后，弹窗不消失，再弹出UIViewController，会出现问题
+- 仅在`backMode`为`normal`时有效，优先执行返回栈的内容，若`target`为`nil`，则会移除顶项，递归继续执行返回，闭包返回为`true`时执行完移除，为`false`不移除。
+- 一定要注意`target`的生命周期，若`target`产生强应用未被及时释放，则会导致返回出错。若您的`target`不需要被释放，您可以选择在它消失时手动调用`FlashbackManager.shared.backStack.removeLast()`
+
+5. 可前置处理（统一处理弹窗，减少代码污染）
 ```swift
 FlashbackManager.shared.preFlashback = { [weak self] in
     guard let `self` = self else { return true }
@@ -115,14 +120,7 @@ FlashbackManager.shared.preFlashback = { [weak self] in
 }
 ```
 
-**注意说明**：
-- 会优先执行`返回栈`的逻辑，所以如果弹窗后，弹窗不消失，再弹出UIViewController，会出现问题
-- 仅在`backMode`为`normal`时有效，优先执行返回栈的内容，若`target`为`nil`，则会移除顶项，递归继续执行返回，闭包返回为`true`时执行完移除，为`false`不移除。
-- 一定要注意`target`的生命周期，若`target`产生强应用未被及时释放，则会导致返回出错。若您的`target`不需要被释放，您可以选择在它消失时手动调用`FlashbackManager.shared.backStack.removeLast()`
-
-
-
-5. 可通知返回，你可以接管返回逻辑
+6. 可通知返回，你可以全权接管返回逻辑
 
 ```swift
 // 设置返回模式为通知
@@ -138,7 +136,7 @@ NotificationCenter.default.addObserver(forName: FlashbackManager.FlashbackNotifi
 
 ## Existing problems
 
-1. 左右两侧有一部分像素用于了侧滑返回，所以不可点击，可通过修改triggerRange来改变触发范围大小。
+1. 左右两侧有一部分像素用于了侧滑返回判断，所以不可点击，可通过修改triggerRange来改变触发范围大小。
 
 ## Author
 
