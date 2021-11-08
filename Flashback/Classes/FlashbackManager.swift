@@ -111,13 +111,13 @@ public class FlashbackManager: NSObject {
     }
 
     /// 当前控制器
-    func currentVC() -> UIViewController? {
+    public func currentVC() -> UIViewController? {
         let vc = targetWindow?.rootViewController
         return FlashbackManager.topVC(of: vc)
     }
 
     /// 私有递归查找最顶级视图
-    class func topVC(of viewController: UIViewController?) -> UIViewController? {
+    public class func topVC(of viewController: UIViewController?) -> UIViewController? {
         if viewController == nil {
             return nil
         }
