@@ -8,6 +8,7 @@
 import UIKit
 
 // MARK: 闪回配置
+
 /// 配置
 public struct FlashbackConfig {
     /// 返回模式
@@ -37,10 +38,11 @@ public struct FlashbackConfig {
     /// 指示器图片
     public var indicatorImage: UIImage? = rightArrowImage {
         didSet {
-            self.leftIndicatorImage = indicatorImage?.withRenderingMode(.alwaysTemplate)
-            self.rightIndicatorImage = UIImage(cgImage: (self.indicatorImage?.cgImage ?? UIImage().cgImage!), scale: 1, orientation: .upMirrored).withRenderingMode(.alwaysTemplate)
+            leftIndicatorImage = indicatorImage?.withRenderingMode(.alwaysTemplate)
+            rightIndicatorImage = UIImage(cgImage: indicatorImage?.cgImage ?? UIImage().cgImage!, scale: 1, orientation: .upMirrored).withRenderingMode(.alwaysTemplate)
         }
     }
+
     /// 左边指示器图片
     public var leftIndicatorImage: UIImage? = rightArrowImage?.withRenderingMode(.alwaysTemplate)
     /// 右边指示器图片
@@ -59,35 +61,34 @@ public struct FlashbackConfig {
     public var vibrateStyle: UIImpactFeedbackGenerator.FeedbackStyle = .light
     /// 上下滚动开启（推荐false）
     public var scrollEnable: Bool = false
-    
+
     /// 默认配置
     public static var `default`: FlashbackConfig {
         let config = FlashbackConfig()
         return config
     }
-    
+
     /// 右箭头图片
     public static var rightArrowImage: UIImage? {
-        guard var url = Bundle.main.url(forResource: "Frameworks", withExtension: nil) else { return nil}
+        guard var url = Bundle.main.url(forResource: "Frameworks", withExtension: nil) else { return nil }
         let podName = "Flashback"
         url = url.appendingPathComponent("\(podName)")
         url = url.appendingPathExtension("framework")
         let mainBundle = Bundle(url: url)
-        guard let bundleUrl = mainBundle?.url(forResource: podName, withExtension: "bundle") else { return nil}
+        guard let bundleUrl = mainBundle?.url(forResource: podName, withExtension: "bundle") else { return nil }
         guard let bundle = Bundle(url: bundleUrl) else { return nil }
         let image = UIImage(contentsOfFile: bundle.path(forResource: "flashback_right_arrow.png", ofType: nil)!)
         return image
     }
-    
+
     /// 返回位置
     public enum Position {
         /// 左边
         case left
         /// 右边
         case right
-        
     }
-    
+
     /// 样式
     public enum Style {
         /// 白色
@@ -96,7 +97,7 @@ public struct FlashbackConfig {
         case black
         /// 自定义
         case custom
-        
+
         /// 名称
         public var name: String {
             switch self {
@@ -108,9 +109,8 @@ public struct FlashbackConfig {
                 return "自定义"
             }
         }
-        
     }
-    
+
     /// 返回模式
     public enum BackMode {
         /// 通用

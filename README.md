@@ -39,7 +39,8 @@ pod 'Flashback'
 import Flashback
 
 FlashbackManager.shared.isEnable = true
-
+// 指定目标window（有默认值）
+FlashbackManager.shared.targetWindow = window
 
 /// 禁用系统提供的手势返回
 self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false

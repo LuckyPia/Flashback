@@ -8,56 +8,56 @@
 import UIKit
 
 // MARK: 闪回视图
+
 /// 闪回视图
 class FlashbackView: UIView {
-    
     typealias Position = FlashbackConfig.Position
-    
+
     /// 返回配置
     var config: FlashbackConfig = .default {
         didSet {
             reinitIndicator()
         }
     }
-    
+
     /// 拖拽开始位置
     var startPosition: Position = .left
-    
+
     /// 拖拽开始y轴
     var startY: CGFloat = 0
-    
+
     /// 开始震动时间，时间太短没有结束震动
     var startVibrateTimeInterval: TimeInterval = 0
-    
+
     /// 拖拽X轴偏移
     var offsetX: CGFloat = 0 {
         didSet {
-            self.indicatorWidth = min(config.maxWidth, config.maxWidth * abs(offsetX) / 120)
+            indicatorWidth = min(config.maxWidth, config.maxWidth * abs(offsetX) / 120)
         }
     }
-    
+
     /// 指示器宽度
     var indicatorWidth: CGFloat = 0 {
         didSet {
-            self.setImageView()
-            self.drawCurve()
+            setImageView()
+            drawCurve()
             // 震动
             if config.vibrateEnable && oldValue < config.minWidth && indicatorWidth >= config.minWidth {
                 UIImpactFeedbackGenerator(style: config.vibrateStyle).impactOccurred()
             }
         }
     }
-    
+
     /// 动画
     var displayLink: CADisplayLink?
-    
+
     /// 每帧减去的宽度
     var frameReduceWidth: CGFloat = 0
-    
+
     deinit {
         self.releaseDisplayLink()
     }
-    
+
     /// 拖动手势
     lazy var panGesture: UIPanGestureRecognizer = {
         let swipe = UIPanGestureRecognizer(target: self, action: #selector(swipe(_:)))
@@ -65,26 +65,26 @@ class FlashbackView: UIView {
         swipe.maximumNumberOfTouches = 1
         return swipe
     }()
-    
+
     /// 内容视图
     lazy var contentView: UIView = {
         let view = UIView()
         return view
     }()
-    
+
     /// 毛玻璃视图
     lazy var blurView: UIVisualEffectView = {
         let view = UIVisualEffectView(effect: UIBlurEffect(style: config.blurStyle ?? .dark))
-        return  view
+        return view
     }()
-    
+
     /// 形状
     lazy var shapeLayer: CAShapeLayer = {
         let shapeLayer = CAShapeLayer()
         shapeLayer.fillColor = UIColor.white.cgColor
         return shapeLayer
     }()
-    
+
     /// 指示器图片
     lazy var imageView: UIImageView = {
         let view = UIImageView()
@@ -93,16 +93,17 @@ class FlashbackView: UIView {
         view.isHidden = true
         return view
     }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         makeUI()
     }
-    
-    required init?(coder: NSCoder) {
+
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     func makeUI() {
         isUserInteractionEnabled = true
         addSubview(contentView)
@@ -111,74 +112,72 @@ class FlashbackView: UIView {
         addGestureRecognizer(panGesture)
         contentView.layer.mask = shapeLayer
         reinitIndicator()
-        
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.contentView.frame = self.bounds
-        self.blurView.frame = self.bounds
+        contentView.frame = bounds
+        blurView.frame = bounds
     }
-    
+
     /// 设置指示器背景
     func reinitIndicator() {
-        switch self.config.style {
+        switch config.style {
         case .white:
-            self.contentView.backgroundColor = .white.withAlphaComponent(config.opacity)
-            self.imageView.tintColor = .black
+            contentView.backgroundColor = .white.withAlphaComponent(config.opacity)
+            imageView.tintColor = .black
         case .black:
-            self.contentView.backgroundColor = .black.withAlphaComponent(config.opacity)
-            self.imageView.tintColor = .white
+            contentView.backgroundColor = .black.withAlphaComponent(config.opacity)
+            imageView.tintColor = .white
         case .custom:
-            self.contentView.backgroundColor = config.backgroundColor.withAlphaComponent(config.opacity)
-            self.imageView.tintColor = config.indicatorColor
+            contentView.backgroundColor = config.backgroundColor.withAlphaComponent(config.opacity)
+            imageView.tintColor = config.indicatorColor
         }
-        
+
         if let blurStyle = config.blurStyle {
-            self.blurView.isHidden = false
-            self.blurView.effect = UIBlurEffect(style: blurStyle)
-        }else {
-            self.blurView.isHidden = true
+            blurView.isHidden = false
+            blurView.effect = UIBlurEffect(style: blurStyle)
+        } else {
+            blurView.isHidden = true
         }
-        
     }
-    
+
     /// 设置指示器图标
     func setImageView() {
-        if self.indicatorWidth > config.minWidth {
-            self.imageView.isHidden = false
-            let x: CGFloat = self.startPosition == .left ? (self.indicatorWidth / 2) : (self.bounds.width - (self.indicatorWidth / 2))
-            self.imageView.center = CGPoint(x: x, y: self.startY)
-        }else {
-            self.imageView.isHidden = true
+        if indicatorWidth > config.minWidth {
+            imageView.isHidden = false
+            let x: CGFloat = startPosition == .left ? (indicatorWidth / 2) : (bounds.width - (indicatorWidth / 2))
+            imageView.center = CGPoint(x: x, y: startY)
+        } else {
+            imageView.isHidden = true
         }
     }
-    
+
     /// 手势回调
     @objc func swipe(_ panGes: UIPanGestureRecognizer) {
         let offsetX = panGes.translation(in: self).x
         switch panGes.state {
         case .began:
-            self.startVibrateTimeInterval = Date().timeIntervalSince1970
-            self.releaseDisplayLink()
+            startVibrateTimeInterval = Date().timeIntervalSince1970
+            releaseDisplayLink()
             let locationPoint = panGes.location(in: panGes.view)
-            if locationPoint.x < self.bounds.width / 2 {
-                self.startY = locationPoint.y
-                self.startPosition = .left
-                self.imageView.image = config.leftIndicatorImage
+            if locationPoint.x < bounds.width / 2 {
+                startY = locationPoint.y
+                startPosition = .left
+                imageView.image = config.leftIndicatorImage
             }
-            if locationPoint.x > self.bounds.width / 2 {
-                self.startY = locationPoint.y
-                self.startPosition = .right
-                self.imageView.image = config.rightIndicatorImage
+            if locationPoint.x > bounds.width / 2 {
+                startY = locationPoint.y
+                startPosition = .right
+                imageView.image = config.rightIndicatorImage
             }
         case .cancelled, .ended, .failed:
             // 是否需要返回
-            self.needBack()
-            
+            needBack()
+
             // 指示器消失动画
-            self.releaseDisplayLink()
-            self.frameReduceWidth = self.indicatorWidth / (60 * config.dismissDuartion)
+            releaseDisplayLink()
+            frameReduceWidth = indicatorWidth / (60 * config.dismissDuartion)
             displayLink = CADisplayLink(target: self, selector: #selector(cancelDrag))
             displayLink?.preferredFramesPerSecond = 60
             displayLink?.isPaused = false
@@ -188,83 +187,83 @@ class FlashbackView: UIView {
             // 上下滚动可用
             if config.scrollEnable {
                 let locationPoint = panGes.location(in: panGes.view)
-                self.startY = locationPoint.y
+                startY = locationPoint.y
             }
         }
-        
     }
-    
+
     /// 绘制曲线
     func drawCurve() {
         let path = UIBezierPath()
-        
-        var startPoint :CGPoint
-        var centerPoint :CGPoint
-        var endPoint :CGPoint
-        
+
+        var startPoint: CGPoint
+        var centerPoint: CGPoint
+        var endPoint: CGPoint
+
         var controlPoint1: CGPoint
         var controlPoint2: CGPoint
         var controlPoint3: CGPoint
         var controlPoint4: CGPoint
         if startPosition == .left {
             startPoint = CGPoint(x: 0, y: startY - config.height / 2)
-            centerPoint = CGPoint(x: 0 + self.indicatorWidth, y: startY)
+            centerPoint = CGPoint(x: 0 + indicatorWidth, y: startY)
             endPoint = CGPoint(x: 0, y: startY + config.height / 2)
-            
+
             controlPoint1 = CGPoint(x: 0, y: startPoint.y + config.edgeCurvature)
-            controlPoint2 = CGPoint(x: 0 + self.indicatorWidth, y: centerPoint.y - config.centerCurvature)
-            controlPoint3 = CGPoint(x: 0 + self.indicatorWidth, y: centerPoint.y + config.centerCurvature)
+            controlPoint2 = CGPoint(x: 0 + indicatorWidth, y: centerPoint.y - config.centerCurvature)
+            controlPoint3 = CGPoint(x: 0 + indicatorWidth, y: centerPoint.y + config.centerCurvature)
             controlPoint4 = CGPoint(x: 0, y: endPoint.y - config.edgeCurvature)
-        }else {
+        } else {
             startPoint = CGPoint(x: bounds.width, y: startY - config.height / 2)
-            centerPoint = CGPoint(x: bounds.width - self.indicatorWidth, y: startY)
+            centerPoint = CGPoint(x: bounds.width - indicatorWidth, y: startY)
             endPoint = CGPoint(x: bounds.width, y: startY + config.height / 2)
-            
+
             controlPoint1 = CGPoint(x: bounds.width, y: startPoint.y + config.edgeCurvature)
-            controlPoint2 = CGPoint(x: bounds.width - self.indicatorWidth, y: centerPoint.y - config.centerCurvature)
-            controlPoint3 = CGPoint(x: bounds.width - self.indicatorWidth, y: centerPoint.y + config.centerCurvature)
+            controlPoint2 = CGPoint(x: bounds.width - indicatorWidth, y: centerPoint.y - config.centerCurvature)
+            controlPoint3 = CGPoint(x: bounds.width - indicatorWidth, y: centerPoint.y + config.centerCurvature)
             controlPoint4 = CGPoint(x: bounds.width, y: endPoint.y - config.edgeCurvature)
         }
-        
+
         path.move(to: startPoint)
         path.addCurve(to: centerPoint, controlPoint1: controlPoint1, controlPoint2: controlPoint2)
-        
+
         path.addCurve(to: endPoint, controlPoint1: controlPoint3, controlPoint2: controlPoint4)
         path.move(to: endPoint)
-        
+
         shapeLayer.path = path.cgPath
     }
-    
+
     /// 取消拖拽
     @objc func cancelDrag() {
-        self.indicatorWidth -= self.frameReduceWidth
-        if self.indicatorWidth <= 0 {
-            self.releaseDisplayLink()
+        indicatorWidth -= frameReduceWidth
+        if indicatorWidth <= 0 {
+            releaseDisplayLink()
         }
     }
-    
+
     /// 释放动画
     func releaseDisplayLink() {
         if displayLink != nil {
-            self.displayLink?.isPaused = true
-            self.displayLink?.invalidate()
-            self.displayLink = nil
+            displayLink?.isPaused = true
+            displayLink?.invalidate()
+            displayLink = nil
         }
     }
-    
+
     /// 判断是否需要返回
     func needBack() {
         // 大于最小宽度，才执行返回
-        if self.indicatorWidth >= config.minWidth {
+        if indicatorWidth >= config.minWidth {
             // 震动，从开始间隔大于0.15秒才有结束震动
-            if  config.vibrateEnable &&
-                    Date().timeIntervalSince1970 - self.startVibrateTimeInterval > 0.15 {
+            if config.vibrateEnable &&
+                Date().timeIntervalSince1970 - startVibrateTimeInterval > 0.15
+            {
                 UIImpactFeedbackGenerator(style: config.vibrateStyle).impactOccurred()
             }
             doBack()
         }
     }
-    
+
     /// 执行返回逻辑
     func doBack() {
         FlashbackManager.shared.doBack()

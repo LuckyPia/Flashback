@@ -8,6 +8,7 @@
 import UIKit
 
 // MARK: 闪回代理
+
 /// 闪回代理
 @objc public protocol FlashbackDelegate {
     /// 返回回调
@@ -15,15 +16,16 @@ import UIKit
 }
 
 // MARK: 闪回代理默认实现
+
 /// 闪回代理默认实现
 extension UIViewController: FlashbackDelegate {
     open func onFlashBack() {
-        if self.presentingViewController != nil {
+        if presentingViewController != nil {
             // dismiss
-            self.dismiss(animated: true)
-        }else {
+            dismiss(animated: true)
+        } else {
             // pop
-            self.navigationController?.popViewController(animated: true)
+            navigationController?.popViewController(animated: true)
         }
     }
 }

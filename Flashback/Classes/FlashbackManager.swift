@@ -8,33 +8,33 @@
 import UIKit
 
 // MARK: 闪回管理器
+
 /// 闪回管理器
 public class FlashbackManager: NSObject {
-    
     public typealias BackAction = FlashbackItem<AnyObject>.BackAction
-    
+
     /// 单例
     public static let shared: FlashbackManager = .init()
-    
-    private override init() { }
-    
+
+    override private init() {}
+
     /// 闪回通知名
     public static let FlashbackNotificationName: NSNotification.Name = .init(rawValue: "FlashbackNotificationName")
-    
+
     /// 配置
     public var config: FlashbackConfig = .default {
         didSet {
-            self.backWindow.config = config
+            backWindow.config = config
         }
     }
-    
-    /// 处理返回的窗口
-    public lazy var window: UIWindow? = {
+
+    /// 处理返回的目标窗口
+    public lazy var targetWindow: UIWindow? = {
         var window = UIApplication.shared.keyWindow
-        if window?.windowLevel != UIWindow.Level.normal{
+        if window?.windowLevel != UIWindow.Level.normal {
             let windows = UIApplication.shared.windows
-            for  windowTemp in windows{
-                if windowTemp.windowLevel == UIWindow.Level.normal{
+            for windowTemp in windows {
+                if windowTemp.windowLevel == UIWindow.Level.normal {
                     window = windowTemp
                     break
                 }
@@ -42,23 +42,23 @@ public class FlashbackManager: NSObject {
         }
         return window
     }()
-    
+
     /// 闪回前置，返回true继续向下执行，返回false终止
     public var preFlashback: BackAction?
-    
-    ///  返回栈
+
+    /// 返回栈
     public var backStack: [FlashbackItem<AnyObject>] = []
-    
-    /// 返回窗口
-    lazy var backWindow: FlashbackWindow = FlashbackWindow(frame: UIScreen.main.bounds)
-    
+
+    /// 指示器窗口
+    lazy var backWindow = FlashbackWindow(frame: UIScreen.main.bounds)
+
     /// 是否可用
     public var isEnable = false {
         didSet {
-            self.setup()
+            setup()
         }
     }
-    
+
     /// 初始化设置
     func setup() {
         if isEnable {
@@ -66,23 +66,22 @@ public class FlashbackManager: NSObject {
                 self.backWindow.isHidden = false
                 self.backWindow.windowLevel = .statusBar + 1
             }
-        }else {
+        } else {
             DispatchQueue.main.async {
                 self.backWindow.isHidden = true
                 self.backWindow.windowLevel = .statusBar - 300
             }
         }
-        
     }
-    
+
     /// 添加返回栈
     /// - Parameters:
     ///   - target: 目标，如果为nil则会被移除
     ///   - action: 返回动作闭包，闭包返回true才从返回栈移除
     public func addFlahback<T: AnyObject>(_ target: T?, action: @escaping BackAction) {
-        self.backStack.append(FlashbackItem(target: target, action: action))
+        backStack.append(FlashbackItem(target: target, action: action))
     }
-    
+
     /// 返回
     func doBack() {
         switch config.backMode {
@@ -92,17 +91,17 @@ public class FlashbackManager: NSObject {
                 return
             }
             // 如果backStack有数据，则优先执行
-            if let stackTop = self.backStack.last {
+            if let stackTop = backStack.last {
                 if stackTop.target == nil {
-                    self.backStack.removeLast()
-                    self.doBack()
+                    backStack.removeLast()
+                    doBack()
                     return
                 }
                 // 返回true才从返回栈移除
                 if stackTop.action() {
-                    self.backStack.removeLast()
+                    backStack.removeLast()
                 }
-            }else {
+            } else {
                 currentVC()?.onFlashBack()
             }
         case .notify:
@@ -110,31 +109,34 @@ public class FlashbackManager: NSObject {
             NotificationCenter.default.post(name: FlashbackManager.FlashbackNotificationName, object: nil)
         }
     }
-    
+
     /// 当前控制器
     func currentVC() -> UIViewController? {
-        let vc = window?.rootViewController
+        let vc = targetWindow?.rootViewController
         return FlashbackManager.topVC(of: vc)
     }
-    
+
     /// 私有递归查找最顶级视图
     class func topVC(of viewController: UIViewController?) -> UIViewController? {
         if viewController == nil {
             return nil
         }
         if let presentedViewController = viewController?.presentedViewController {
-            return topVC(of: presentedViewController)// presented的VC
+            return topVC(of: presentedViewController) // presented的VC
         }
         if let tabBarController = viewController as? UITabBarController,
-           let selectedViewController = tabBarController.selectedViewController {
+           let selectedViewController = tabBarController.selectedViewController
+        {
             return topVC(of: selectedViewController) // UITabBarController
         }
         if let navigationController = viewController as? UINavigationController,
-           let visibleViewController = navigationController.visibleViewController {
+           let visibleViewController = navigationController.visibleViewController
+        {
             return topVC(of: visibleViewController) // UINavigationController
         }
         if let pageViewController = viewController as? UIPageViewController,
-           pageViewController.viewControllers?.count == 1 { // UIPageController
+           pageViewController.viewControllers?.count == 1
+        { // UIPageController
             return topVC(of: pageViewController.viewControllers?.first)
         }
         for subview in viewController?.view?.subviews ?? [] {
@@ -145,4 +147,3 @@ public class FlashbackManager: NSObject {
         return viewController
     }
 }
-

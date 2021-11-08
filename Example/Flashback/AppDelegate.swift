@@ -6,19 +6,18 @@
 //  Copyright (c) 2021 LuckyPia. All rights reserved.
 //
 
-import UIKit
 import Flashback
+import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     var window: UIWindow?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = UINavigationController(rootViewController: ViewController())
         window?.makeKeyAndVisible()
-        
+
         var config = FlashbackConfig.default
         config.enablePositions = [.left, .right]
         config.triggerRange = 20
@@ -35,10 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         config.ignoreTopHeight = 150
         FlashbackManager.shared.config = config
         FlashbackManager.shared.isEnable = true
-        FlashbackManager.shared.window = window
-        
+        FlashbackManager.shared.targetWindow = window
+
         return true
     }
-
 }
-

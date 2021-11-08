@@ -6,11 +6,10 @@
 //  Copyright (c) 2021 LuckyPia. All rights reserved.
 //
 
-import UIKit
 import Flashback
+import UIKit
 
 class ViewController: UIViewController {
-
     lazy var items: [ItemType] = {
         var list = ItemType.allCases
         if self.presentingViewController != nil {
@@ -18,7 +17,7 @@ class ViewController: UIViewController {
         }
         return list
     }()
-    
+
     lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .clear
@@ -31,8 +30,7 @@ class ViewController: UIViewController {
         tableView.tableFooterView = UIView()
         return tableView
     }()
-    
-    
+
     lazy var textField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "请输入内容"
@@ -43,55 +41,54 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Flashback"
+        title = "Flashback"
         view.backgroundColor = .white
         makeUI()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.tableView.reloadData()
+        tableView.reloadData()
     }
-    
+
     func makeUI() {
-        
         /// 禁用系统提供的手势返回
-        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-        
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+
         view.addSubview(tableView)
-        self.tableView.translatesAutoresizingMaskIntoConstraints = false
-        let constTop = NSLayoutConstraint(item: self.tableView, attribute: .top, relatedBy: .equal, toItem: self.view, attribute: .top, multiplier: 1, constant: 0)
-        let constRight = NSLayoutConstraint(item: self.tableView, attribute: .right, relatedBy: .equal, toItem: self.view, attribute: .right, multiplier: 1, constant: 0)
-        let constLeft = NSLayoutConstraint(item: self.tableView, attribute: .left, relatedBy: .equal, toItem: self.view, attribute: .left, multiplier: 1, constant: 0)
-        let constBottom = NSLayoutConstraint(item: self.tableView, attribute: .bottom, relatedBy: .equal, toItem: self.view, attribute: .bottom, multiplier: 1, constant: 0)
-        self.tableView.superview!.addConstraint(constTop)
-        self.tableView.superview!.addConstraint(constRight)
-        self.tableView.superview!.addConstraint(constLeft)
-        self.tableView.superview!.addConstraint(constBottom)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        let constTop = NSLayoutConstraint(item: tableView, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: 0)
+        let constRight = NSLayoutConstraint(item: tableView, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1, constant: 0)
+        let constLeft = NSLayoutConstraint(item: tableView, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1, constant: 0)
+        let constBottom = NSLayoutConstraint(item: tableView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: 0)
+        tableView.superview!.addConstraint(constTop)
+        tableView.superview!.addConstraint(constRight)
+        tableView.superview!.addConstraint(constLeft)
+        tableView.superview!.addConstraint(constBottom)
     }
-    
+
     @objc func onPush() {
-        self.navigationController?.pushViewController(ViewController(), animated: true)
+        navigationController?.pushViewController(ViewController(), animated: true)
     }
-    
+
     @objc func onPresent() {
-        self.present(ViewController(), animated: true)
+        present(ViewController(), animated: true)
     }
-    
+
     @objc func onVibrate() {
         FlashbackManager.shared.config.vibrateEnable = !FlashbackManager.shared.config.vibrateEnable
     }
-    
+
     func onPositionEnable(_ position: FlashbackConfig.Position) {
         var enablePositions = FlashbackManager.shared.config.enablePositions
         if enablePositions.contains(position) {
-            enablePositions = enablePositions.filter({ $0 != position })
-        }else {
+            enablePositions = enablePositions.filter { $0 != position }
+        } else {
             enablePositions.append(position)
         }
         FlashbackManager.shared.config.enablePositions = enablePositions
     }
-    
+
     func onStyle() {
         switch FlashbackManager.shared.config.style {
         case .white:
@@ -102,7 +99,7 @@ class ViewController: UIViewController {
             FlashbackManager.shared.config.style = .white
         }
     }
-    
+
     func onVibrateStyle() {
         switch FlashbackManager.shared.config.vibrateStyle {
         case .light:
@@ -127,63 +124,50 @@ class ViewController: UIViewController {
             FlashbackManager.shared.config.vibrateStyle = .light
         }
     }
-    
+
     /// 重写返回
     override func onFlashBack() {
         super.onFlashBack()
     }
-    
-    
-
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        self.items.count
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
+        items.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DemoCell")!
-        let item = self.items[indexPath.row]
+        let item = items[indexPath.row]
         cell.textLabel?.text = item.title
         return cell
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let item = self.items[indexPath.row]
+
+    func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let item = items[indexPath.row]
         switch item {
         case .style:
-            self.onStyle()
-            break
+            onStyle()
         case .push:
-            self.onPush()
-            break
+            onPush()
         case .present:
-            self.onPresent()
-            break
+            onPresent()
         case .vibrate:
-            self.onVibrate()
-            break
+            onVibrate()
         case .vibrateStyle:
-            self.onVibrateStyle()
-            break
+            onVibrateStyle()
         case .leftPositionEnable:
-            self.onPositionEnable(.left)
-            break
+            onPositionEnable(.left)
         case .rightPositionEnable:
-            self.onPositionEnable(.right)
-            break
+            onPositionEnable(.right)
         case .scrollEnable:
             FlashbackManager.shared.config.scrollEnable = !FlashbackManager.shared.config.scrollEnable
-            break
         }
-        self.tableView.reloadData()
+        tableView.reloadData()
     }
-    
 }
 
 enum ItemType: CaseIterable {
-    
     /// push
     case push
     /// present
@@ -200,7 +184,7 @@ enum ItemType: CaseIterable {
     case rightPositionEnable
     /// 可滑动
     case scrollEnable
-    
+
     var title: String {
         switch self {
         case .style:
@@ -237,4 +221,3 @@ enum ItemType: CaseIterable {
         }
     }
 }
-
