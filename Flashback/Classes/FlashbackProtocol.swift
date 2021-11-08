@@ -7,10 +7,10 @@
 
 import UIKit
 
-// MARK: 闪回代理
+// MARK: 闪回协议
 
-/// 闪回代理
-@objc public protocol FlashbackDelegate {
+/// 闪回协议
+@objc public protocol FlashbackProtocol {
     /// 返回回调
     @objc func onFlashback()
 }
@@ -18,7 +18,7 @@ import UIKit
 // MARK: 闪回代理默认实现
 
 /// 闪回代理默认实现
-extension UIViewController: FlashbackDelegate {
+extension UIViewController: FlashbackProtocol {
     open func onFlashback() {
         if presentingViewController != nil {
             // dismiss
