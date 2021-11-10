@@ -32,7 +32,7 @@ class FlashbackView: UIView {
     /// 拖拽X轴偏移
     var offsetX: CGFloat = 0 {
         didSet {
-            indicatorWidth = min(config.maxWidth, config.maxWidth * abs(offsetX) / 120)
+            indicatorWidth = min(config.maxWidth, config.maxWidth * abs(offsetX) / config.dragRange)
         }
     }
 
@@ -183,7 +183,11 @@ class FlashbackView: UIView {
             displayLink?.isPaused = false
             displayLink?.add(to: .current, forMode: .common)
         default:
-            self.offsetX = offsetX
+            if startPosition == .left {
+                self.offsetX = max(0, offsetX)
+            }else {
+                self.offsetX = min(0, offsetX)
+            }
             // 上下滚动可用
             if config.scrollEnable {
                 let locationPoint = panGes.location(in: panGes.view)

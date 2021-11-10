@@ -21,19 +21,21 @@ public struct FlashbackConfig {
     public var enablePositions: [Position] = [.left, .right]
     /// 触发范围
     public var triggerRange: CGFloat = 15
-    /// 指示器高度
+    /// 高度
     public var height: CGFloat = 320
     /// 返回所需最小宽度
     public var minWidth: CGFloat = 20
     /// 最大宽度
     public var maxWidth: CGFloat = 30
+    /// 拖动范围
+    public var dragRange: CGFloat = 80
     /// 边缘曲率
     public var edgeCurvature: CGFloat = 100
     /// 中心曲率
     public var centerCurvature: CGFloat = 40
-    /// 指示器背景颜色
+    /// 背景颜色
     public var backgroundColor: UIColor = .clear
-    /// 指示器背景透明度
+    /// 背景透明度
     public var opacity: CGFloat = 1
     /// 指示器图片
     public var indicatorImage: UIImage? = rightArrowImage {
@@ -57,7 +59,7 @@ public struct FlashbackConfig {
     public var ignoreTopHeight: CGFloat = 150
     /// 震动启用（默认true）
     public var vibrateEnable: Bool = true
-    /// 震动强度（推荐soft）
+    /// 震动强度
     public var vibrateStyle: UIImpactFeedbackGenerator.FeedbackStyle = .light
     /// 上下滚动开启（推荐false）
     public var scrollEnable: Bool = false
