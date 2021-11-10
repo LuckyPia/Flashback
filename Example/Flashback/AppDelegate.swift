@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         var config = FlashbackConfig.default
         config.enablePositions = [.left, .right]
-        config.triggerRange = 20
+        config.triggerRange = 15
         config.vibrateEnable = true
         if #available(iOS 13.0, *) {
             config.vibrateStyle = .soft
@@ -32,6 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         config.indicatorColor = .yellow
         config.scrollEnable = false
         config.ignoreTopHeight = 150
+        config.showTriggerArea = true
         FlashbackManager.shared.config = config
         FlashbackManager.shared.isEnable = true
         FlashbackManager.shared.targetWindow = window

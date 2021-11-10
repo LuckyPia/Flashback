@@ -17,6 +17,7 @@ class FlashbackView: UIView {
     var config: FlashbackConfig = .default {
         didSet {
             reinitIndicator()
+            setShowTriggerArea()
         }
     }
 
@@ -60,10 +61,10 @@ class FlashbackView: UIView {
 
     /// 拖动手势
     lazy var panGesture: UIPanGestureRecognizer = {
-        let swipe = UIPanGestureRecognizer(target: self, action: #selector(swipe(_:)))
-        swipe.minimumNumberOfTouches = 1
-        swipe.maximumNumberOfTouches = 1
-        return swipe
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
+        panGesture.minimumNumberOfTouches = 1
+        panGesture.maximumNumberOfTouches = 1
+        return panGesture
     }()
 
     /// 内容视图
@@ -94,6 +95,14 @@ class FlashbackView: UIView {
         return view
     }()
 
+    /// 触发区域视图
+    lazy var triggerAreaShapeLayer: CAShapeLayer = {
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.fillColor = UIColor.red.withAlphaComponent(0.2).cgColor
+        shapeLayer.fillRule = .evenOdd
+        return shapeLayer
+    }()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         makeUI()
@@ -106,6 +115,7 @@ class FlashbackView: UIView {
 
     func makeUI() {
         isUserInteractionEnabled = true
+
         addSubview(contentView)
         contentView.addSubview(blurView)
         contentView.addSubview(imageView)
@@ -118,9 +128,11 @@ class FlashbackView: UIView {
         super.layoutSubviews()
         contentView.frame = bounds
         blurView.frame = bounds
+
+        setShowTriggerArea()
     }
 
-    /// 设置指示器背景
+    /// 设置指示器
     func reinitIndicator() {
         switch config.style {
         case .white:
@@ -142,6 +154,26 @@ class FlashbackView: UIView {
         }
     }
 
+    /// 显示触发区域
+    func setShowTriggerArea() {
+        let ignoreTopHeight = FlashbackManager.shared.isPortrait ? config.ignoreTopHeight : 0
+        let leftPath = UIBezierPath(rect: CGRect(x: 0, y: ignoreTopHeight, width: config.triggerRange, height: bounds.size.height - ignoreTopHeight))
+        let rightPath = UIBezierPath(rect: CGRect(x: bounds.size.width - config.triggerRange, y: ignoreTopHeight, width: config.triggerRange, height: bounds.size.height - ignoreTopHeight))
+        let path = UIBezierPath()
+        path.append(leftPath)
+        path.append(rightPath)
+        triggerAreaShapeLayer.path = path.cgPath
+        if config.showTriggerArea {
+            if triggerAreaShapeLayer.superlayer == nil {
+                layer.addSublayer(triggerAreaShapeLayer)
+            }
+        } else {
+            if triggerAreaShapeLayer.superlayer != nil {
+                triggerAreaShapeLayer.removeFromSuperlayer()
+            }
+        }
+    }
+
     /// 设置指示器图标
     func setImageView() {
         if indicatorWidth > config.minWidth {
@@ -154,7 +186,7 @@ class FlashbackView: UIView {
     }
 
     /// 手势回调
-    @objc func swipe(_ panGes: UIPanGestureRecognizer) {
+    @objc func pan(_ panGes: UIPanGestureRecognizer) {
         let offsetX = panGes.translation(in: self).x
         switch panGes.state {
         case .began:
@@ -185,7 +217,7 @@ class FlashbackView: UIView {
         default:
             if startPosition == .left {
                 self.offsetX = max(0, offsetX)
-            }else {
+            } else {
                 self.offsetX = min(0, offsetX)
             }
             // 上下滚动可用

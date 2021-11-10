@@ -10,6 +10,7 @@ import Flashback
 import UIKit
 
 class ViewController: UIViewController {
+    
     lazy var items: [ItemType] = {
         var list = ItemType.allCases
         if self.presentingViewController != nil {
@@ -162,6 +163,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             onPositionEnable(.right)
         case .scrollEnable:
             FlashbackManager.shared.config.scrollEnable = !FlashbackManager.shared.config.scrollEnable
+        case .showTriggerArea:
+            FlashbackManager.shared.config.showTriggerArea = !FlashbackManager.shared.config.showTriggerArea
         }
         tableView.reloadData()
     }
@@ -184,6 +187,8 @@ enum ItemType: CaseIterable {
     case rightPositionEnable
     /// 可滑动
     case scrollEnable
+    /// 显示触发区域
+    case showTriggerArea
 
     var title: String {
         switch self {
@@ -218,6 +223,8 @@ enum ItemType: CaseIterable {
             return "右侧启用（\(FlashbackManager.shared.config.enablePositions.contains(.right) ? "开" : "关")）"
         case .scrollEnable:
             return "可滑动（\(FlashbackManager.shared.config.scrollEnable ? "开" : "关")）"
+        case .showTriggerArea:
+            return "显示触发区域（\(FlashbackManager.shared.config.showTriggerArea ? "开" : "关")）"
         }
     }
 }

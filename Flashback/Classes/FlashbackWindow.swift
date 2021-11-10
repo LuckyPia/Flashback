@@ -37,12 +37,13 @@ class FlashbackWindow: UIWindow {
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard isUserInteractionEnabled, !isHidden, alpha > 0 else {
             return nil
         }
-        if point.y < config.ignoreTopHeight {
+        let ignoreTopHeight = FlashbackManager.shared.isPortrait ? config.ignoreTopHeight : 0
+        if point.y < ignoreTopHeight {
             return nil
         }
         if (point.x < config.triggerRange && config.enablePositions.contains(.left)) || (point.x > bounds.width - config.triggerRange && config.enablePositions.contains(.right)) {

@@ -63,6 +63,8 @@ public struct FlashbackConfig {
     public var vibrateStyle: UIImpactFeedbackGenerator.FeedbackStyle = .light
     /// 上下滚动开启（推荐false）
     public var scrollEnable: Bool = false
+    /// 展示触发区域
+    public var showTriggerArea: Bool = false
 
     /// 默认配置
     public static var `default`: FlashbackConfig {

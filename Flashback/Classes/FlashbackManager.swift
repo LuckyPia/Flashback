@@ -59,6 +59,9 @@ public class FlashbackManager: NSObject {
         }
     }
 
+    /// 是否是竖屏，如果是横屏模式，不忽略顶部高度
+    var isPortrait: Bool = true
+
     /// 初始化设置
     func setup() {
         if isEnable {

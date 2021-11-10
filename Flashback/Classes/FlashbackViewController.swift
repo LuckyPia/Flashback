@@ -40,4 +40,17 @@ class FlashbackViewController: UIViewController {
         backView.superview!.addConstraint(constLeft)
         backView.superview!.addConstraint(constBottom)
     }
+
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animate(alongsideTransition: { _ in
+            let orient = UIApplication.shared.statusBarOrientation
+            if orient.isPortrait {
+                FlashbackManager.shared.isPortrait = true
+            } else if orient.isLandscape {
+                FlashbackManager.shared.isPortrait = false
+            }
+        }) { _ in
+        }
+        super.willTransition(to: newCollection, with: coordinator)
+    }
 }
