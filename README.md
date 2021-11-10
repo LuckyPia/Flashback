@@ -42,8 +42,8 @@ FlashbackManager.shared.isEnable = true
 // 指定目标window（有默认值）
 FlashbackManager.shared.targetWindow = window
 
-/// 禁用系统提供的手势返回
-self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+// 禁用系统提供的手势返回
+navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 ```
 
 
@@ -86,15 +86,41 @@ FlashbackManager.shared.config = config
 extension ViewController {
     /// 重写返回
     override func onFlashBack() {
-        super.onFlashBack()
+        // super.onFlashBack()
+        self.view.endEditing(true)
     }
 }
 ```
 
+4. 可前置处理（统一处理弹窗，减少代码侵入）
+```swift
+// 举例：判断VC上的视图是否满足某个协议，若满足，则执行其返回方法
+// 不是一定要满足FlashbackProtocol协议，你可以选择自己的协议，更好的减少代码侵入
+FlashbackManager.shared.preFlashback = {
+    // 返回true继续向下执行正常逻辑，返回false终止
+    if let alertList = FlashbackManager.shared.currentVC()?.view.subviews.filter({ $0 is FlashbackProtocol }),
+        let lastAlert = alertList.last as? FlashbackProtocol {
+        lastAlert.onFlashback()
+        // 返回false不再继续往下执行
+        return false
+    }
+    // ...
+    
+    // 返回true继续正常执行
+    return true
+}
 
+// 扩展视图实现协议
+extension AlertView: FlashbackProtocol {
+    /// 弹窗闪回扩展
+    open func onFlashback() {
+        self.dismiss()
+    }
+}
 
-4. 可自定义返回栈（页面弹框...）
+```
 
+5. 可自定义返回栈（页面弹框...）
 ```swift
 let alert = AlertView()
 alert.show()
@@ -107,21 +133,11 @@ FlashbackManager.shared.addFlahback(alert) { [weak alert] in
 ```
 
 **注意说明**：
-- 会优先执行`返回栈`的逻辑，所以如果弹窗后，弹窗不消失，再弹出UIViewController，会出现问题
-- 仅在`backMode`为`normal`时有效，优先执行返回栈的内容，若`target`为`nil`，则会移除顶项，递归继续执行返回，闭包返回为`true`时执行完移除，为`false`不移除。
+- 在`backMode`为`normal`时，执行顺序为：`preFlashback` -> `backStack` -> `UIViewController(pop | dismiss)`，所以如果弹窗后，弹窗不消失，再弹出`UIViewController`，会出现问题
+- 若`target`为`nil`，则会移除顶项，递归继续执行返回，闭包返回为`true`时执行完移除，为`false`不移除。
 - 一定要注意`target`的生命周期，若`target`产生强应用未被及时释放，则会导致返回出错。若您的`target`不需要被释放，您可以选择在它消失时手动调用`FlashbackManager.shared.backStack.removeLast()`
 
-5. 可前置处理（统一处理弹窗，减少代码污染）
-```swift
-FlashbackManager.shared.preFlashback = { [weak self] in
-    guard let `self` = self else { return true }
-    // 返回true继续向下执行正常逻辑，返回false终止
-    return true
-}
-```
-
-6. 可通知返回，你可以全权接管返回逻辑
-
+6. 可通知返回，您可以全权接管返回逻辑
 ```swift
 // 设置返回模式为通知
 FlashbackManager.shared.config.backMode = .notify
@@ -130,7 +146,7 @@ FlashbackManager.shared.config.backMode = .notify
 NotificationCenter.default.addObserver(forName: FlashbackManager.FlashbackNotificationName, object: nil, queue: nil) { [weak self] _ in
     guard let `self` = self else { return }
     // 执行返回逻辑
-    self.navigationController?.popViewController(animated: true)
+    // self.navigationController?.popViewController(animated: true)
 }
 ```
 
