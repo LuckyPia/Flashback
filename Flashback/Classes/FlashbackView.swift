@@ -17,7 +17,7 @@ class FlashbackView: UIView {
     var config: FlashbackConfig = .default {
         didSet {
             reinitIndicator()
-            setShowTriggerArea()
+            setTriggerArea()
         }
     }
 
@@ -129,7 +129,7 @@ class FlashbackView: UIView {
         contentView.frame = bounds
         blurView.frame = bounds
 
-        setShowTriggerArea()
+        setTriggerArea()
     }
 
     /// 设置指示器
@@ -155,13 +155,17 @@ class FlashbackView: UIView {
     }
 
     /// 显示触发区域
-    func setShowTriggerArea() {
+    func setTriggerArea() {
         let ignoreTopHeight = FlashbackManager.shared.isPortrait ? config.ignoreTopHeight : 0
         let leftPath = UIBezierPath(rect: CGRect(x: 0, y: ignoreTopHeight, width: config.triggerRange, height: bounds.size.height - ignoreTopHeight))
         let rightPath = UIBezierPath(rect: CGRect(x: bounds.size.width - config.triggerRange, y: ignoreTopHeight, width: config.triggerRange, height: bounds.size.height - ignoreTopHeight))
         let path = UIBezierPath()
-        path.append(leftPath)
-        path.append(rightPath)
+        if config.enablePositions.contains(.left) {
+            path.append(leftPath)
+        }
+        if config.enablePositions.contains(.right) {
+            path.append(rightPath)
+        }
         triggerAreaShapeLayer.path = path.cgPath
         if config.showTriggerArea {
             if triggerAreaShapeLayer.superlayer == nil {
