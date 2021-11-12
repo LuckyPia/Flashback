@@ -10,7 +10,7 @@ import UIKit
 // MARK: 闪回协议
 
 /// 闪回协议
-@objc public protocol FlashbackProtocol {
+@objc public protocol FlashbackProtocol: NSObjectProtocol {
     /// 返回回调
     @objc func onFlashback()
 }

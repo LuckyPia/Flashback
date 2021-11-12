@@ -166,6 +166,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         case .showTriggerArea:
             FlashbackManager.shared.config.showTriggerArea = !FlashbackManager.shared.config.showTriggerArea
         }
+        FlashbackManager.shared.config = FlashbackManager.shared.config
         tableView.reloadData()
     }
 }

@@ -11,25 +11,25 @@ import UIKit
 
 /// 闪回管理器
 public class FlashbackManager: NSObject {
-    public typealias BackAction = FlashbackItem<AnyObject>.BackAction
+    public typealias BackAction = FlashbackItem.BackAction
 
     /// 单例
-    public static let shared: FlashbackManager = .init()
+    @objc public static let shared: FlashbackManager = .init()
 
     override private init() {}
 
     /// 闪回通知名
-    public static let FlashbackNotificationName: NSNotification.Name = .init(rawValue: "FlashbackNotificationName")
+    @objc public static let FlashbackNotificationName: NSNotification.Name = .init(rawValue: "FlashbackNotificationName")
 
-    /// 配置
-    public var config: FlashbackConfig = .default {
+    /// 闪回配置，直接修改对象属性无效，重新赋值生效
+    @objc public var config: FlashbackConfig = .default {
         didSet {
             backWindow.config = config
         }
     }
 
     /// 处理返回的目标窗口
-    public lazy var targetWindow: UIWindow? = {
+    @objc public lazy var targetWindow: UIWindow? = {
         var window = UIApplication.shared.keyWindow
         if window?.windowLevel != UIWindow.Level.normal {
             let windows = UIApplication.shared.windows
@@ -44,16 +44,16 @@ public class FlashbackManager: NSObject {
     }()
 
     /// 闪回前置，返回true继续向下执行，返回false终止
-    public var preFlashback: BackAction?
+    @objc public var preFlashback: BackAction?
 
     /// 返回栈
-    public var backStack: [FlashbackItem<AnyObject>] = []
+    public var backStack: [FlashbackItem] = []
 
     /// 指示器窗口
     lazy var backWindow = FlashbackWindow(frame: UIScreen.main.bounds)
 
     /// 是否可用
-    public var isEnable = false {
+    @objc public var isEnable = false {
         didSet {
             setup()
         }
@@ -81,7 +81,7 @@ public class FlashbackManager: NSObject {
     /// - Parameters:
     ///   - target: 目标，如果为nil则会被移除
     ///   - action: 返回动作闭包，闭包返回true才从返回栈移除
-    public func addFlahback<T: AnyObject>(_ target: T?, action: @escaping BackAction) {
+    @objc public func addFlahback(_ target: AnyObject?, action: @escaping BackAction) {
         backStack.append(FlashbackItem(target: target, action: action))
     }
 
@@ -114,13 +114,13 @@ public class FlashbackManager: NSObject {
     }
 
     /// 当前控制器
-    public func currentVC() -> UIViewController? {
+    @objc public func currentVC() -> UIViewController? {
         let vc = targetWindow?.rootViewController
         return FlashbackManager.topVC(of: vc)
     }
 
-    /// 私有递归查找最顶级视图
-    public class func topVC(of viewController: UIViewController?) -> UIViewController? {
+    /// 递归查找最顶级视图
+    @objc public class func topVC(of viewController: UIViewController?) -> UIViewController? {
         if viewController == nil {
             return nil
         }
@@ -139,12 +139,12 @@ public class FlashbackManager: NSObject {
         }
         if let pageViewController = viewController as? UIPageViewController,
            pageViewController.viewControllers?.count == 1
-        { // UIPageController
+        {
             return topVC(of: pageViewController.viewControllers?.first)
         }
         for subview in viewController?.view?.subviews ?? [] {
             if let childViewController = subview.next as? UIViewController {
-                return topVC(of: childViewController) // 子VC
+                return topVC(of: childViewController)
             }
         }
         return viewController

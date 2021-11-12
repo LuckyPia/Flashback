@@ -75,7 +75,7 @@ class FlashbackView: UIView {
 
     /// 毛玻璃视图
     lazy var blurView: UIVisualEffectView = {
-        let view = UIVisualEffectView(effect: UIBlurEffect(style: config.blurStyle ?? .dark))
+        let view = UIVisualEffectView(effect: UIBlurEffect(style: config.blurStyle))
         return view
     }()
 
@@ -146,9 +146,9 @@ class FlashbackView: UIView {
             imageView.tintColor = config.indicatorColor
         }
 
-        if let blurStyle = config.blurStyle {
+        if config.isBlur {
             blurView.isHidden = false
-            blurView.effect = UIBlurEffect(style: blurStyle)
+            blurView.effect = UIBlurEffect(style: config.blurStyle)
         } else {
             blurView.isHidden = true
         }

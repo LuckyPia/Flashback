@@ -8,37 +8,38 @@
 import UIKit
 
 // MARK: 闪回配置
-
-/// 配置
-public struct FlashbackConfig {
+/// 闪回配置
+@objc public class FlashbackConfig: NSObject {
     /// 返回模式
-    public var backMode: BackMode = .normal
+    @objc public var backMode: BackMode = .normal
     /// 样式
-    public var style: Style = .black
+    @objc public var style: FlashbackStyle = .black
+    /// 是否模糊
+    @objc public var isBlur: Bool = false
     /// 模糊
-    public var blurStyle: UIBlurEffect.Style? = nil
+    @objc public var blurStyle: UIBlurEffect.Style = .dark
     /// 启用位置
     public var enablePositions: [Position] = [.left, .right]
     /// 触发范围
-    public var triggerRange: CGFloat = 15
+    @objc public var triggerRange: CGFloat = 15
     /// 高度
-    public var height: CGFloat = 320
+    @objc public var height: CGFloat = 320
     /// 返回所需最小宽度
-    public var minWidth: CGFloat = 20
+    @objc public var minWidth: CGFloat = 20
     /// 最大宽度
-    public var maxWidth: CGFloat = 30
+    @objc public var maxWidth: CGFloat = 30
     /// 拖动范围
-    public var dragRange: CGFloat = 80
+    @objc public var dragRange: CGFloat = 80
     /// 边缘曲率
-    public var edgeCurvature: CGFloat = 100
+    @objc public var edgeCurvature: CGFloat = 100
     /// 中心曲率
-    public var centerCurvature: CGFloat = 40
+    @objc public var centerCurvature: CGFloat = 40
     /// 背景颜色
-    public var backgroundColor: UIColor = .clear
+    @objc public var backgroundColor: UIColor = .clear
     /// 背景透明度
-    public var opacity: CGFloat = 1
+    @objc public var opacity: CGFloat = 1
     /// 指示器图片
-    public var indicatorImage: UIImage? = rightArrowImage {
+    @objc public var indicatorImage: UIImage? = rightArrowImage {
         didSet {
             leftIndicatorImage = indicatorImage?.withRenderingMode(.alwaysTemplate)
             rightIndicatorImage = UIImage(cgImage: indicatorImage?.cgImage ?? UIImage().cgImage!, scale: 1, orientation: .upMirrored).withRenderingMode(.alwaysTemplate)
@@ -46,34 +47,40 @@ public struct FlashbackConfig {
     }
 
     /// 左边指示器图片
-    public var leftIndicatorImage: UIImage? = rightArrowImage?.withRenderingMode(.alwaysTemplate)
+    @objc public var leftIndicatorImage: UIImage? = rightArrowImage?.withRenderingMode(.alwaysTemplate)
     /// 右边指示器图片
-    public var rightIndicatorImage: UIImage? = UIImage(cgImage: rightArrowImage!.cgImage!, scale: 1, orientation: .upMirrored).withRenderingMode(.alwaysTemplate)
+    @objc public var rightIndicatorImage: UIImage? = UIImage(cgImage: rightArrowImage!.cgImage!, scale: 1, orientation: .upMirrored).withRenderingMode(.alwaysTemplate)
     /// 指示器图片大小
-    public var indicatorSize: CGSize = .init(width: 15, height: 15)
+    @objc public var indicatorSize: CGSize = .init(width: 15, height: 15)
     /// 指示器图片颜色
-    public var indicatorColor: UIColor = .white
+    @objc public var indicatorColor: UIColor = .white
     /// 消失持续时间（0.1s）
-    public var dismissDuartion: CGFloat = 0.1
+    @objc public var dismissDuartion: CGFloat = 0.1
     /// 忽略顶部高度
-    public var ignoreTopHeight: CGFloat = 150
+    @objc public var ignoreTopHeight: CGFloat = 150
     /// 震动启用（默认true）
-    public var vibrateEnable: Bool = true
+    @objc public var vibrateEnable: Bool = true
     /// 震动强度
-    public var vibrateStyle: UIImpactFeedbackGenerator.FeedbackStyle = .light
+    @objc public var vibrateStyle: UIImpactFeedbackGenerator.FeedbackStyle = .light
     /// 上下滚动开启（推荐false）
-    public var scrollEnable: Bool = false
+    @objc public var scrollEnable: Bool = false
     /// 展示触发区域
-    public var showTriggerArea: Bool = false
+    @objc public var showTriggerArea: Bool = false
 
     /// 默认配置
-    public static var `default`: FlashbackConfig {
+    @objc public static var `default`: FlashbackConfig {
         let config = FlashbackConfig()
         return config
     }
+    
+    /// 设置可用位置
+    @objc func setEnablePositions(_ positions: NSArray) {
+        let _positions = positions as! [Position]
+        self.enablePositions = _positions
+    }
 
     /// 右箭头图片
-    public static var rightArrowImage: UIImage? {
+    @objc public static var rightArrowImage: UIImage? {
         guard var url = Bundle.main.url(forResource: "Frameworks", withExtension: nil) else { return nil }
         let podName = "Flashback"
         url = url.appendingPathComponent("\(podName)")
@@ -86,7 +93,7 @@ public struct FlashbackConfig {
     }
 
     /// 返回位置
-    public enum Position {
+    @objc public enum Position: Int {
         /// 左边
         case left
         /// 右边
@@ -94,7 +101,7 @@ public struct FlashbackConfig {
     }
 
     /// 样式
-    public enum Style {
+    @objc public enum FlashbackStyle: Int {
         /// 白色
         case white
         /// 黑色
@@ -116,7 +123,7 @@ public struct FlashbackConfig {
     }
 
     /// 返回模式
-    public enum BackMode {
+    @objc public enum BackMode: Int {
         /// 通用
         case normal
         /// 通知 FlashbackNotificationName
