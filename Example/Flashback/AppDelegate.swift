@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = UINavigationController(rootViewController: ViewController())
         window?.makeKeyAndVisible()
 
-        var config = FlashbackConfig.default
+        let config = FlashbackConfig.default
         config.enablePositions = [.left, .right]
         config.triggerRange = 15
         config.vibrateEnable = true
@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         config.indicatorColor = .yellow
         config.scrollEnable = false
         config.ignoreTopHeight = 150
-        config.showTriggerArea = true
+        config.showTriggerArea = false
         FlashbackManager.shared.config = config
         FlashbackManager.shared.isEnable = true
         FlashbackManager.shared.targetWindow = window

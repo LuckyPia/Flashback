@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18264680273F664300A7E1E4 /* DemoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1826467F273F664300A7E1E4 /* DemoCell.swift */; };
 		384A1959B33080B44151EBED /* Pods_Flashback_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31311AB2EA47FF2CC1A166EC /* Pods_Flashback_Tests.framework */; };
 		3DF5E5D373D5F3B50D9BD8A0 /* Pods_Flashback_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D6BA0A0B96C165568B541F3 /* Pods_Flashback_Example.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
@@ -29,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		10CDAD054A5FAA4DA53F58D8 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		1826467F273F664300A7E1E4 /* DemoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCell.swift; sourceTree = "<group>"; };
 		31311AB2EA47FF2CC1A166EC /* Pods_Flashback_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Flashback_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		515CDC6E27407CC4D51465D7 /* Pods-Flashback_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flashback_Tests.release.xcconfig"; path = "Target Support Files/Pods-Flashback_Tests/Pods-Flashback_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		588EE03C7A75F726BD4040FA /* Flashback.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Flashback.podspec; path = ../Flashback.podspec; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
+				1826467F273F664300A7E1E4 /* DemoCell.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
@@ -335,6 +338,7 @@
 			files = (
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
+				18264680273F664300A7E1E4 /* DemoCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

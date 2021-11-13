@@ -8,9 +8,8 @@
 import UIKit
 
 // MARK: 闪回管理器
-
 /// 闪回管理器
-public class FlashbackManager: NSObject {
+@objc public class FlashbackManager: NSObject {
     public typealias BackAction = FlashbackItem.BackAction
 
     /// 单例

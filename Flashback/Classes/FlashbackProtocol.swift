@@ -24,8 +24,13 @@ extension UIViewController: FlashbackProtocol {
             // pop
             navigationController?.popViewController(animated: true)
         } else {
-            // dismiss
-            dismiss(animated: true)
+            if presentingViewController == nil {
+                // pop
+                navigationController?.popViewController(animated: true)
+            }else {
+                // dismiss
+                dismiss(animated: true)
+            }
         }
     }
 }

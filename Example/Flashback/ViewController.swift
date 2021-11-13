@@ -11,6 +11,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    
     lazy var items: [ItemType] = {
         var list = ItemType.allCases
         if self.presentingViewController != nil {
@@ -27,7 +28,7 @@ class ViewController: UIViewController {
         tableView.tableHeaderView = nil
         tableView.sectionHeaderHeight = 0
         tableView.sectionFooterHeight = 0
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DemoCell")
+        tableView.register(DemoCell.self, forCellReuseIdentifier: "DemoCell")
         tableView.tableFooterView = UIView()
         return tableView
     }()
@@ -43,12 +44,21 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Flashback"
-        view.backgroundColor = .white
         makeUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        switch FlashbackManager.shared.config.style {
+        case .black:
+            self.view.backgroundColor = .white
+        case .custom:
+            self.view.backgroundColor = .white
+        case .white:
+            self.view.backgroundColor = .gray
+        }
+        
         tableView.reloadData()
     }
 
@@ -91,39 +101,78 @@ class ViewController: UIViewController {
     }
 
     func onStyle() {
-        switch FlashbackManager.shared.config.style {
-        case .white:
-            FlashbackManager.shared.config.style = .black
-        case .black:
-            FlashbackManager.shared.config.style = .custom
-        case .custom:
+        let alertVC = UIAlertController.init(title: "指示器样式", message: nil, preferredStyle: .actionSheet)
+        let action1 = UIAlertAction.init(title: "white", style: FlashbackManager.shared.config.style == .white ? .destructive : .default) { [weak self] action in
+            guard let `self` = self else { return }
+            self.view.backgroundColor = .gray
             FlashbackManager.shared.config.style = .white
+            FlashbackManager.shared.config = FlashbackManager.shared.config
+            self.tableView.reloadData()
         }
+        alertVC.addAction(action1)
+        let action2 = UIAlertAction.init(title: "black", style: FlashbackManager.shared.config.style == .black ? .destructive : .default) { [weak self] action in
+            guard let `self` = self else { return }
+            self.view.backgroundColor = .white
+            FlashbackManager.shared.config.style = .black
+            FlashbackManager.shared.config = FlashbackManager.shared.config
+            self.tableView.reloadData()
+        }
+        alertVC.addAction(action2)
+        let action3 = UIAlertAction.init(title: "custom", style: FlashbackManager.shared.config.style == .custom ? .destructive : .default) { [weak self] action in
+            guard let `self` = self else { return }
+            self.view.backgroundColor = .white
+            FlashbackManager.shared.config.style = .custom
+            FlashbackManager.shared.config = FlashbackManager.shared.config
+            self.tableView.reloadData()
+        }
+        alertVC.addAction(action3)
+        let cancelAction = UIAlertAction.init(title: "取消", style: .cancel, handler: nil)
+        alertVC.addAction(cancelAction)
+        self.present(alertVC, animated: true)
     }
 
     func onVibrateStyle() {
-        switch FlashbackManager.shared.config.vibrateStyle {
-        case .light:
-            if #available(iOS 13.0, *) {
-                FlashbackManager.shared.config.vibrateStyle = .soft
-            } else {
-                FlashbackManager.shared.config.vibrateStyle = .heavy
-            }
-        case .soft:
-            if #available(iOS 13.0, *) {
-                FlashbackManager.shared.config.vibrateStyle = .rigid
-            } else {
-                FlashbackManager.shared.config.vibrateStyle = .heavy
-            }
-        case .rigid:
-            FlashbackManager.shared.config.vibrateStyle = .heavy
-        case .heavy:
-            FlashbackManager.shared.config.vibrateStyle = .medium
-        case .medium:
+        let alertVC = UIAlertController.init(title: "震动样式", message: nil, preferredStyle: .actionSheet)
+        let action1 = UIAlertAction.init(title: "light", style: FlashbackManager.shared.config.vibrateStyle == .light ? .destructive : .default) { [weak self] action in
+            guard let `self` = self else { return }
             FlashbackManager.shared.config.vibrateStyle = .light
-        @unknown default:
-            FlashbackManager.shared.config.vibrateStyle = .light
+            FlashbackManager.shared.config = FlashbackManager.shared.config
+            self.tableView.reloadData()
         }
+        alertVC.addAction(action1)
+        let action2 = UIAlertAction.init(title: "medium", style: FlashbackManager.shared.config.vibrateStyle == .medium ? .destructive : .default) { [weak self] action in
+            guard let `self` = self else { return }
+            FlashbackManager.shared.config.vibrateStyle = .medium
+            FlashbackManager.shared.config = FlashbackManager.shared.config
+            self.tableView.reloadData()
+        }
+        alertVC.addAction(action2)
+        if #available(iOS 13.0, *) {
+            let action3 = UIAlertAction.init(title: "soft", style: FlashbackManager.shared.config.vibrateStyle == .soft ? .destructive : .default) { [weak self] action in
+                guard let `self` = self else { return }
+                FlashbackManager.shared.config.vibrateStyle = .soft
+                FlashbackManager.shared.config = FlashbackManager.shared.config
+                self.tableView.reloadData()
+            }
+            alertVC.addAction(action3)
+            let action4 = UIAlertAction.init(title: "rigid", style: FlashbackManager.shared.config.vibrateStyle == .rigid ? .destructive : .default) { [weak self] action in
+                guard let `self` = self else { return }
+                FlashbackManager.shared.config.vibrateStyle = .rigid
+                FlashbackManager.shared.config = FlashbackManager.shared.config
+                self.tableView.reloadData()
+            }
+            alertVC.addAction(action4)
+        }
+        let action5 = UIAlertAction.init(title: "heavy", style: FlashbackManager.shared.config.vibrateStyle == .heavy ? .destructive : .default) { [weak self] action in
+            guard let `self` = self else { return }
+            FlashbackManager.shared.config.vibrateStyle = .heavy
+            FlashbackManager.shared.config = FlashbackManager.shared.config
+            self.tableView.reloadData()
+        }
+        alertVC.addAction(action5)
+        let cancelAction = UIAlertAction.init(title: "取消", style: .cancel, handler: nil)
+        alertVC.addAction(cancelAction)
+        self.present(alertVC, animated: true)
     }
 
     /// 重写返回
@@ -138,9 +187,80 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DemoCell")!
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DemoCell") as! DemoCell
+        cell.backgroundColor = .clear
         let item = items[indexPath.row]
+        cell.setData(itemType: item)
         cell.textLabel?.text = item.title
+        cell.slider.isHidden = true
+        switch item {
+        case .triggerRange:
+            cell.slider.isHidden = false
+            cell.slider.minimumValue = 0
+            cell.slider.maximumValue = 30
+            cell.slider.value = Float(FlashbackManager.shared.config.triggerRange)
+            cell.onValueChange = { value in
+                FlashbackManager.shared.config.triggerRange = value
+                FlashbackManager.shared.config = FlashbackManager.shared.config
+            }
+            break
+        case .backgroundOpacity:
+            cell.slider.isHidden = false
+            cell.slider.minimumValue = 0
+            cell.slider.maximumValue = 1
+            cell.slider.value = Float(FlashbackManager.shared.config.opacity)
+            cell.onValueChange = { value in
+                FlashbackManager.shared.config.opacity = value
+                FlashbackManager.shared.config = FlashbackManager.shared.config
+            }
+        case .maxWidth:
+            cell.slider.isHidden = false
+            cell.slider.minimumValue = 25
+            cell.slider.maximumValue = 60
+            cell.slider.value = Float(FlashbackManager.shared.config.maxWidth)
+            cell.onValueChange = { value in
+                FlashbackManager.shared.config.maxWidth = value
+                FlashbackManager.shared.config = FlashbackManager.shared.config
+            }
+        case .height:
+            cell.slider.isHidden = false
+            cell.slider.minimumValue = 30
+            cell.slider.maximumValue = 500
+            cell.slider.value = Float(FlashbackManager.shared.config.height)
+            cell.onValueChange = { value in
+                FlashbackManager.shared.config.height = value
+                FlashbackManager.shared.config = FlashbackManager.shared.config
+            }
+        case .edgeCurvature:
+            cell.slider.isHidden = false
+            cell.slider.minimumValue = 5
+            cell.slider.maximumValue = 200
+            cell.slider.value = Float(FlashbackManager.shared.config.edgeCurvature)
+            cell.onValueChange = { value in
+                FlashbackManager.shared.config.edgeCurvature = value
+                FlashbackManager.shared.config = FlashbackManager.shared.config
+            }
+        case .centerCurvature:
+            cell.slider.isHidden = false
+            cell.slider.minimumValue = 5
+            cell.slider.maximumValue = 100
+            cell.slider.value = Float(FlashbackManager.shared.config.centerCurvature)
+            cell.onValueChange = { value in
+                FlashbackManager.shared.config.centerCurvature = value
+                FlashbackManager.shared.config = FlashbackManager.shared.config
+            }
+        case .ignoreTopHeight:
+            cell.slider.isHidden = false
+            cell.slider.minimumValue = 0
+            cell.slider.maximumValue = 500
+            cell.slider.value = Float(FlashbackManager.shared.config.ignoreTopHeight)
+            cell.onValueChange = { value in
+                FlashbackManager.shared.config.ignoreTopHeight = value
+                FlashbackManager.shared.config = FlashbackManager.shared.config
+            }
+        default:
+            break
+        }
         return cell
     }
 
@@ -165,6 +285,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             FlashbackManager.shared.config.scrollEnable = !FlashbackManager.shared.config.scrollEnable
         case .showTriggerArea:
             FlashbackManager.shared.config.showTriggerArea = !FlashbackManager.shared.config.showTriggerArea
+        case .triggerRange, .backgroundOpacity, .maxWidth, .height, .edgeCurvature, .centerCurvature, .ignoreTopHeight:
+            break
+        case .reset:
+            FlashbackManager.shared.config = FlashbackConfig.default
         }
         FlashbackManager.shared.config = FlashbackManager.shared.config
         tableView.reloadData()
@@ -190,6 +314,23 @@ enum ItemType: CaseIterable {
     case scrollEnable
     /// 显示触发区域
     case showTriggerArea
+    /// 触发范围
+    case triggerRange
+    /// 背景透明度
+    case backgroundOpacity
+    /// 最大宽度
+    case maxWidth
+    /// 高度
+    case height
+    /// 边缘曲率
+    case edgeCurvature
+    /// 中心曲率
+    case centerCurvature
+    /// 忽略顶部高度
+    case ignoreTopHeight
+    /// 重置
+    case reset
+    
 
     var title: String {
         switch self {
@@ -224,8 +365,25 @@ enum ItemType: CaseIterable {
             return "右侧启用（\(FlashbackManager.shared.config.enablePositions.contains(.right) ? "开" : "关")）"
         case .scrollEnable:
             return "可滑动（\(FlashbackManager.shared.config.scrollEnable ? "开" : "关")）"
+        
         case .showTriggerArea:
-            return "显示触发区域（\(FlashbackManager.shared.config.showTriggerArea ? "开" : "关")）"
+            return "显示触发范围（\(FlashbackManager.shared.config.showTriggerArea ? "开" : "关")）"
+        case .triggerRange:
+            return "触发范围（\(String(format: "%.2f", FlashbackManager.shared.config.triggerRange))）"
+        case .backgroundOpacity:
+            return "背景透明度（\(String(format: "%.2f", FlashbackManager.shared.config.opacity))）"
+        case .maxWidth:
+            return "宽度（\(String(format: "%.2f", FlashbackManager.shared.config.maxWidth))）"
+        case .height:
+            return "高度（\(String(format: "%.2f", FlashbackManager.shared.config.height))）"
+        case .edgeCurvature:
+            return "边缘曲率（\(String(format: "%.2f", FlashbackManager.shared.config.edgeCurvature))）"
+        case .centerCurvature:
+            return "中心曲率（\(String(format: "%.2f", FlashbackManager.shared.config.centerCurvature))）"
+        case .ignoreTopHeight:
+            return "忽略顶部高度（\(String(format: "%.2f", FlashbackManager.shared.config.ignoreTopHeight))）"
+        case .reset:
+            return "重置"
         }
     }
 }
