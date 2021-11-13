@@ -120,9 +120,6 @@ import UIKit
 
     /// 递归查找最顶级视图
     @objc public class func topVC(of viewController: UIViewController?) -> UIViewController? {
-        if viewController == nil {
-            return nil
-        }
         if let presentedViewController = viewController?.presentedViewController {
             return topVC(of: presentedViewController) // presented的VC
         }
@@ -135,16 +132,6 @@ import UIKit
            let visibleViewController = navigationController.visibleViewController
         {
             return topVC(of: visibleViewController) // UINavigationController
-        }
-        if let pageViewController = viewController as? UIPageViewController,
-           pageViewController.viewControllers?.count == 1
-        {
-            return topVC(of: pageViewController.viewControllers?.first)
-        }
-        for subview in viewController?.view?.subviews ?? [] {
-            if let childViewController = subview.next as? UIViewController {
-                return topVC(of: childViewController)
-            }
         }
         return viewController
     }
