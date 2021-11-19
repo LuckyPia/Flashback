@@ -1,10 +1,9 @@
 # Flashback - 超强大、超好用、超顺滑的iOS手势返回
 
 [![iOS Version](https://img.shields.io/badge/iOS-10.0%2B-blueviolet)](https://cocoapods.org/pods/Flashback)
-[![Language](https://img.shields.io/badge/language-swift5.0-ff69b4)](https://cocoapods.org/pods/Flashback)
+[![Language](https://img.shields.io/badge/swift-5.0-ff501e)](https://cocoapods.org/pods/Flashback)
 [![Flashback Version](https://img.shields.io/cocoapods/v/Flashback.svg?style=flat)](https://cocoapods.org/pods/Flashback)
 [![License](https://img.shields.io/cocoapods/l/Flashback.svg?style=flat)](https://cocoapods.org/pods/Flashback)
-[![Platform](https://img.shields.io/cocoapods/p/Flashback.svg?style=flat)](https://cocoapods.org/pods/Flashback)
 
 ## 效果图
 <table>
