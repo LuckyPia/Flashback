@@ -95,7 +95,7 @@ class FlashbackView: UIView {
         return view
     }()
 
-    /// 触发区域视图
+    /// 触发区域layer
     lazy var triggerAreaShapeLayer: CAShapeLayer = {
         let shapeLayer = CAShapeLayer()
         shapeLayer.fillColor = UIColor.red.withAlphaComponent(0.2).cgColor

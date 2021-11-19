@@ -18,25 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = UINavigationController(rootViewController: ViewController())
         window?.makeKeyAndVisible()
 
-        let config = FlashbackConfig.default
-        config.enablePositions = [.left, .right]
-        config.triggerRange = 15
-        config.vibrateEnable = true
-        if #available(iOS 13.0, *) {
-            config.vibrateStyle = .soft
-        } else {
-            config.vibrateStyle = .light
-        }
-        config.style = .black
-        config.backgroundColor = .black
-        config.indicatorColor = .yellow
-        config.scrollEnable = false
-        config.ignoreTopHeight = 150
-        config.showTriggerArea = false
-        FlashbackManager.shared.config = config
+        FlashbackManager.shared.config = FlashbackConfig.default
         FlashbackManager.shared.isEnable = true
         FlashbackManager.shared.targetWindow = window
-
         return true
     }
 }

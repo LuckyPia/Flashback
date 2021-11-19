@@ -11,6 +11,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    var textColor: UIColor = .black
     
     lazy var items: [ItemType] = {
         var list = ItemType.allCases
@@ -40,10 +41,23 @@ class ViewController: UIViewController {
         textField.layer.cornerRadius = 10
         return textField
     }()
+    
+    @available(iOS 15.0, *)
+    lazy var newAppearance: UINavigationBarAppearance = {
+        let newAppearance = UINavigationBarAppearance()
+        newAppearance.configureWithOpaqueBackground()
+        newAppearance.backgroundColor = .white
+        newAppearance.shadowImage = UIImage()
+        newAppearance.shadowColor = nil
+        
+        return newAppearance
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Flashback"
+        self.setNavigationBar(backgroundColor: .white, textColor: .black)
+        
         makeUI()
     }
 
@@ -52,11 +66,11 @@ class ViewController: UIViewController {
         
         switch FlashbackManager.shared.config.style {
         case .black:
-            self.view.backgroundColor = .white
+            self.setNavigationBar(backgroundColor: .white, textColor: .black)
         case .custom:
-            self.view.backgroundColor = .white
+            self.setNavigationBar(backgroundColor: .white, textColor: .black)
         case .white:
-            self.view.backgroundColor = .gray
+            self.setNavigationBar(backgroundColor: .black, textColor: .white)
         }
         
         tableView.reloadData()
@@ -77,104 +91,21 @@ class ViewController: UIViewController {
         tableView.superview!.addConstraint(constLeft)
         tableView.superview!.addConstraint(constBottom)
     }
-
-    @objc func onPush() {
-        navigationController?.pushViewController(ViewController(), animated: true)
+    
+    func setNavigationBar(backgroundColor: UIColor, textColor: UIColor) {
+        self.textColor = textColor
+        self.tableView.separatorColor = textColor.withAlphaComponent(0.2)
+        self.view.backgroundColor = backgroundColor
+        self.navigationController?.navigationBar.backgroundColor = backgroundColor
+        self.navigationController?.navigationBar.tintColor = textColor
+        self.navigationController?.navigationBar.barTintColor = textColor
+        if #available(iOS 15.0, *) {
+            self.newAppearance.backgroundColor = backgroundColor
+            self.newAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor]
+            self.navigationController?.navigationBar.standardAppearance = self.newAppearance
+            self.navigationController?.navigationBar.scrollEdgeAppearance = self.newAppearance
+        }
     }
-
-    @objc func onPresent() {
-        present(ViewController(), animated: true)
-    }
-
-    @objc func onVibrate() {
-        FlashbackManager.shared.config.vibrateEnable = !FlashbackManager.shared.config.vibrateEnable
-    }
-
-    func onPositionEnable(_ position: FlashbackConfig.Position) {
-        var enablePositions = FlashbackManager.shared.config.enablePositions
-        if enablePositions.contains(position) {
-            enablePositions = enablePositions.filter { $0 != position }
-        } else {
-            enablePositions.append(position)
-        }
-        FlashbackManager.shared.config.enablePositions = enablePositions
-    }
-
-    func onStyle() {
-        let alertVC = UIAlertController.init(title: "指示器样式", message: nil, preferredStyle: .actionSheet)
-        let action1 = UIAlertAction.init(title: "white", style: FlashbackManager.shared.config.style == .white ? .destructive : .default) { [weak self] action in
-            guard let `self` = self else { return }
-            self.view.backgroundColor = .gray
-            FlashbackManager.shared.config.style = .white
-            FlashbackManager.shared.config = FlashbackManager.shared.config
-            self.tableView.reloadData()
-        }
-        alertVC.addAction(action1)
-        let action2 = UIAlertAction.init(title: "black", style: FlashbackManager.shared.config.style == .black ? .destructive : .default) { [weak self] action in
-            guard let `self` = self else { return }
-            self.view.backgroundColor = .white
-            FlashbackManager.shared.config.style = .black
-            FlashbackManager.shared.config = FlashbackManager.shared.config
-            self.tableView.reloadData()
-        }
-        alertVC.addAction(action2)
-        let action3 = UIAlertAction.init(title: "custom", style: FlashbackManager.shared.config.style == .custom ? .destructive : .default) { [weak self] action in
-            guard let `self` = self else { return }
-            self.view.backgroundColor = .white
-            FlashbackManager.shared.config.style = .custom
-            FlashbackManager.shared.config = FlashbackManager.shared.config
-            self.tableView.reloadData()
-        }
-        alertVC.addAction(action3)
-        let cancelAction = UIAlertAction.init(title: "取消", style: .cancel, handler: nil)
-        alertVC.addAction(cancelAction)
-        self.present(alertVC, animated: true)
-    }
-
-    func onVibrateStyle() {
-        let alertVC = UIAlertController.init(title: "震动样式", message: nil, preferredStyle: .actionSheet)
-        let action1 = UIAlertAction.init(title: "light", style: FlashbackManager.shared.config.vibrateStyle == .light ? .destructive : .default) { [weak self] action in
-            guard let `self` = self else { return }
-            FlashbackManager.shared.config.vibrateStyle = .light
-            FlashbackManager.shared.config = FlashbackManager.shared.config
-            self.tableView.reloadData()
-        }
-        alertVC.addAction(action1)
-        let action2 = UIAlertAction.init(title: "medium", style: FlashbackManager.shared.config.vibrateStyle == .medium ? .destructive : .default) { [weak self] action in
-            guard let `self` = self else { return }
-            FlashbackManager.shared.config.vibrateStyle = .medium
-            FlashbackManager.shared.config = FlashbackManager.shared.config
-            self.tableView.reloadData()
-        }
-        alertVC.addAction(action2)
-        if #available(iOS 13.0, *) {
-            let action3 = UIAlertAction.init(title: "soft", style: FlashbackManager.shared.config.vibrateStyle == .soft ? .destructive : .default) { [weak self] action in
-                guard let `self` = self else { return }
-                FlashbackManager.shared.config.vibrateStyle = .soft
-                FlashbackManager.shared.config = FlashbackManager.shared.config
-                self.tableView.reloadData()
-            }
-            alertVC.addAction(action3)
-            let action4 = UIAlertAction.init(title: "rigid", style: FlashbackManager.shared.config.vibrateStyle == .rigid ? .destructive : .default) { [weak self] action in
-                guard let `self` = self else { return }
-                FlashbackManager.shared.config.vibrateStyle = .rigid
-                FlashbackManager.shared.config = FlashbackManager.shared.config
-                self.tableView.reloadData()
-            }
-            alertVC.addAction(action4)
-        }
-        let action5 = UIAlertAction.init(title: "heavy", style: FlashbackManager.shared.config.vibrateStyle == .heavy ? .destructive : .default) { [weak self] action in
-            guard let `self` = self else { return }
-            FlashbackManager.shared.config.vibrateStyle = .heavy
-            FlashbackManager.shared.config = FlashbackManager.shared.config
-            self.tableView.reloadData()
-        }
-        alertVC.addAction(action5)
-        let cancelAction = UIAlertAction.init(title: "取消", style: .cancel, handler: nil)
-        alertVC.addAction(cancelAction)
-        self.present(alertVC, animated: true)
-    }
-
     /// 重写返回
     override func onFlashback() {
         super.onFlashback()
@@ -183,7 +114,12 @@ class ViewController: UIViewController {
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
-        items.count
+        if FlashbackManager.shared.isEnable {
+            return items.count
+        }else {
+            return 1
+        }
+        
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -192,6 +128,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let item = items[indexPath.row]
         cell.setData(itemType: item)
         cell.textLabel?.text = item.title
+        cell.textLabel?.textColor = textColor
         cell.slider.isHidden = true
         switch item {
         case .triggerRange:
@@ -267,12 +204,16 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = items[indexPath.row]
         switch item {
+        case .enable:
+            onEnable()
         case .style:
             onStyle()
         case .push:
             onPush()
         case .present:
             onPresent()
+        case .intercept:
+            onIntercept()
         case .vibrate:
             onVibrate()
         case .vibrateStyle:
@@ -289,13 +230,144 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             break
         case .reset:
             FlashbackManager.shared.config = FlashbackConfig.default
+            FlashbackManager.shared.preFlashback = nil
         }
         FlashbackManager.shared.config = FlashbackManager.shared.config
         tableView.reloadData()
     }
 }
 
+extension ViewController {
+    func onEnable() {
+        FlashbackManager.shared.isEnable = !FlashbackManager.shared.isEnable
+    }
+    
+    func onPush() {
+        navigationController?.pushViewController(ViewController(), animated: true)
+    }
+
+    func onPresent() {
+        present(ViewController(), animated: true)
+    }
+    
+    func onIntercept() {
+        if FlashbackManager.shared.preFlashback != nil {
+            FlashbackManager.shared.preFlashback = nil
+        }else {
+            FlashbackManager.shared.preFlashback = {
+                if let alertVC = FlashbackManager.shared.currentVC() as? UIAlertController,
+                   alertVC.title == "提示" {
+                    return false
+                }
+                
+                let alertVC = UIAlertController(title: "提示", message: "拦截返回成功", preferredStyle: .alert)
+                let action = UIAlertAction(title: "确定", style: .default) { [weak alertVC] _ in
+                    guard let `alertVC` = alertVC else { return }
+                    alertVC.dismiss(animated: true)
+                }
+                alertVC.addAction(action)
+                FlashbackManager.shared.currentVC()?.present(alertVC, animated: true)
+                
+                return false
+            }
+        }
+    }
+
+    func onVibrate() {
+        FlashbackManager.shared.config.vibrateEnable = !FlashbackManager.shared.config.vibrateEnable
+    }
+
+    func onPositionEnable(_ position: FlashbackConfig.Position) {
+        var enablePositions = FlashbackManager.shared.config.enablePositions
+        if enablePositions.contains(position) {
+            enablePositions = enablePositions.filter { $0 != position }
+        } else {
+            enablePositions.append(position)
+        }
+        FlashbackManager.shared.config.enablePositions = enablePositions
+    }
+
+    func onStyle() {
+        let alertVC = UIAlertController(title: "指示器样式", message: nil, preferredStyle: .actionSheet)
+        let action1 = UIAlertAction(title: "white", style: FlashbackManager.shared.config.style == .white ? .destructive : .default) { [weak self] action in
+            guard let `self` = self else { return }
+            self.setNavigationBar(backgroundColor: .black, textColor: .white)
+            FlashbackManager.shared.config.style = .white
+            FlashbackManager.shared.config = FlashbackManager.shared.config
+            self.tableView.reloadData()
+        }
+        alertVC.addAction(action1)
+        let action2 = UIAlertAction(title: "black", style: FlashbackManager.shared.config.style == .black ? .destructive : .default) { [weak self] action in
+            guard let `self` = self else { return }
+            self.setNavigationBar(backgroundColor: .white, textColor: .black)
+            FlashbackManager.shared.config.style = .black
+            FlashbackManager.shared.config = FlashbackManager.shared.config
+            self.tableView.reloadData()
+        }
+        alertVC.addAction(action2)
+        let action3 = UIAlertAction(title: "custom", style: FlashbackManager.shared.config.style == .custom ? .destructive : .default) { [weak self] action in
+            guard let `self` = self else { return }
+            self.setNavigationBar(backgroundColor: .white, textColor: .black)
+            FlashbackManager.shared.config.style = .custom
+            FlashbackManager.shared.config.indicatorColor = .yellow
+            FlashbackManager.shared.config.backgroundColor = .black
+            FlashbackManager.shared.config = FlashbackManager.shared.config
+            self.tableView.reloadData()
+        }
+        alertVC.addAction(action3)
+        let cancelAction = UIAlertAction.init(title: "取消", style: .cancel, handler: nil)
+        alertVC.addAction(cancelAction)
+        self.present(alertVC, animated: true)
+    }
+
+    func onVibrateStyle() {
+        let alertVC = UIAlertController.init(title: "震动样式", message: nil, preferredStyle: .actionSheet)
+        let action1 = UIAlertAction.init(title: "light", style: FlashbackManager.shared.config.vibrateStyle == .light ? .destructive : .default) { [weak self] action in
+            guard let `self` = self else { return }
+            FlashbackManager.shared.config.vibrateStyle = .light
+            FlashbackManager.shared.config = FlashbackManager.shared.config
+            self.tableView.reloadData()
+        }
+        alertVC.addAction(action1)
+        let action2 = UIAlertAction.init(title: "medium", style: FlashbackManager.shared.config.vibrateStyle == .medium ? .destructive : .default) { [weak self] action in
+            guard let `self` = self else { return }
+            FlashbackManager.shared.config.vibrateStyle = .medium
+            FlashbackManager.shared.config = FlashbackManager.shared.config
+            self.tableView.reloadData()
+        }
+        alertVC.addAction(action2)
+        if #available(iOS 13.0, *) {
+            let action3 = UIAlertAction.init(title: "soft", style: FlashbackManager.shared.config.vibrateStyle == .soft ? .destructive : .default) { [weak self] action in
+                guard let `self` = self else { return }
+                FlashbackManager.shared.config.vibrateStyle = .soft
+                FlashbackManager.shared.config = FlashbackManager.shared.config
+                self.tableView.reloadData()
+            }
+            alertVC.addAction(action3)
+            let action4 = UIAlertAction.init(title: "rigid", style: FlashbackManager.shared.config.vibrateStyle == .rigid ? .destructive : .default) { [weak self] action in
+                guard let `self` = self else { return }
+                FlashbackManager.shared.config.vibrateStyle = .rigid
+                FlashbackManager.shared.config = FlashbackManager.shared.config
+                self.tableView.reloadData()
+            }
+            alertVC.addAction(action4)
+        }
+        let action5 = UIAlertAction.init(title: "heavy", style: FlashbackManager.shared.config.vibrateStyle == .heavy ? .destructive : .default) { [weak self] action in
+            guard let `self` = self else { return }
+            FlashbackManager.shared.config.vibrateStyle = .heavy
+            FlashbackManager.shared.config = FlashbackManager.shared.config
+            self.tableView.reloadData()
+        }
+        alertVC.addAction(action5)
+        let cancelAction = UIAlertAction.init(title: "取消", style: .cancel, handler: nil)
+        alertVC.addAction(cancelAction)
+        self.present(alertVC, animated: true)
+    }
+}
+
 enum ItemType: CaseIterable {
+    /// 启用
+    case enable
     /// push
     case push
     /// present
@@ -310,6 +382,8 @@ enum ItemType: CaseIterable {
     case leftPositionEnable
     /// 右侧启用
     case rightPositionEnable
+    /// 拦截
+    case intercept
     /// 可滑动
     case scrollEnable
     /// 显示触发区域
@@ -334,29 +408,27 @@ enum ItemType: CaseIterable {
 
     var title: String {
         switch self {
+        case .enable:
+            return "启用(\(FlashbackManager.shared.isEnable ? "开" : "关"))"
         case .style:
             return "样式(\(FlashbackManager.shared.config.style.name))"
         case .push:
             return "Push"
         case .present:
             return "Present"
+        case .intercept:
+            return "拦截返回（\(FlashbackManager.shared.preFlashback != nil ? "开" : "关")）"
         case .vibrate:
             return "震动（\(FlashbackManager.shared.config.vibrateEnable ? "开" : "关")）"
         case .vibrateStyle:
             var name = "unknown"
             switch FlashbackManager.shared.config.vibrateStyle {
-            case .light:
-                name = "light"
-            case .soft:
-                name = "soft"
-            case .rigid:
-                name = "rigid"
-            case .heavy:
-                name = "heavy"
-            case .medium:
-                name = "medium"
-            @unknown default:
-                name = "unknown"
+            case .light: name = "light"
+            case .soft: name = "soft"
+            case .rigid: name = "rigid"
+            case .heavy: name = "heavy"
+            case .medium: name = "medium"
+            @unknown default: name = "unknown"
             }
             return "震动强度（\(name)）"
         case .leftPositionEnable:
@@ -365,7 +437,6 @@ enum ItemType: CaseIterable {
             return "右侧启用（\(FlashbackManager.shared.config.enablePositions.contains(.right) ? "开" : "关")）"
         case .scrollEnable:
             return "可滑动（\(FlashbackManager.shared.config.scrollEnable ? "开" : "关")）"
-        
         case .showTriggerArea:
             return "显示触发范围（\(FlashbackManager.shared.config.showTriggerArea ? "开" : "关")）"
         case .triggerRange:

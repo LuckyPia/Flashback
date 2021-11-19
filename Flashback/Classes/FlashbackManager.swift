@@ -16,6 +16,13 @@ import UIKit
     @objc public static let shared: FlashbackManager = .init()
 
     override private init() {}
+    
+    /// 是否可用
+    @objc public var isEnable = false {
+        didSet {
+            setup()
+        }
+    }
 
     /// 闪回通知名
     @objc public static let FlashbackNotificationName: NSNotification.Name = .init(rawValue: "FlashbackNotificationName")
@@ -47,33 +54,31 @@ import UIKit
 
     /// 返回栈
     public var backStack: [FlashbackItem] = []
+    
+    /// 键盘是否展示（可在preFlashback判断，决定是否先隐藏键盘，再退出）
+    @objc var showKeyboard: Bool = false
 
     /// 指示器窗口
     lazy var backWindow = FlashbackWindow(frame: UIScreen.main.bounds)
-
-    /// 是否可用
-    @objc public var isEnable = false {
-        didSet {
-            setup()
-        }
-    }
 
     /// 是否是竖屏，如果是横屏模式，不忽略顶部高度
     var isPortrait: Bool = true
 
     /// 初始化设置
     func setup() {
-        if isEnable {
-            DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let `self` = self else { return }
+            if self.isEnable {
                 self.backWindow.isHidden = false
                 self.backWindow.windowLevel = .statusBar + 1
-            }
-        } else {
-            DispatchQueue.main.async {
+                self.monitorKeyboard(true)
+            } else {
                 self.backWindow.isHidden = true
                 self.backWindow.windowLevel = .statusBar - 300
+                self.monitorKeyboard(false)
             }
         }
+        
     }
 
     /// 添加返回栈
@@ -84,16 +89,19 @@ import UIKit
         backStack.append(FlashbackItem(target: target, action: action))
     }
 
-    /// 返回
+    /// 执行返回逻辑
     func doBack() {
         switch config.backMode {
         case .normal:
             // 闪回前置，返回true继续向下执行，返回false终止
+            // 您可以统一处理弹窗、收起键盘、提交日志等等...
+            // 巧妙使用该回调，可以减小代码耦合度
             if let flag = preFlashback?(), !flag {
                 return
             }
-            // 如果backStack有数据，则优先执行
+            // 如果backStack栈顶有数据，则执行backStack的栈顶
             if let stackTop = backStack.last {
+                // 若对象已销毁，则跳过本次返回，执行下一次返回
                 if stackTop.target == nil {
                     backStack.removeLast()
                     doBack()
@@ -104,6 +112,7 @@ import UIKit
                     backStack.removeLast()
                 }
             } else {
+                // 获取当前VC，执行FlashbackProtocol协议实现的onFlashback()方法（该方法有默认实现）
                 currentVC()?.onFlashback()
             }
         case .notify:
@@ -134,5 +143,24 @@ import UIKit
             return topVC(of: visibleViewController) // UINavigationController
         }
         return viewController
+    }
+    
+    /// 监控键盘
+    func monitorKeyboard(_ isMonitor: Bool) {
+        let notify: NotificationCenter = NotificationCenter.default
+        if isMonitor {
+            notify.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: nil) { [weak self] _ in
+                guard let `self` = self else { return }
+                self.showKeyboard = true
+            }
+            notify.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: nil) { [weak self] _ in
+                guard let `self` = self else { return }
+                self.showKeyboard = false
+            }
+        }else {
+            notify.removeObserver(self, name: UIResponder.keyboardDidShowNotification, object: nil)
+            notify.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+        }
+        
     }
 }
