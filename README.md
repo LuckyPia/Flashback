@@ -1,4 +1,4 @@
-# Flashback - iOS手势返回
+# Flashback - 超强大、超好用、超顺滑的iOS手势返回
 
 [![iOS Version](https://img.shields.io/badge/iOS-10.0%2B-blueviolet)](https://cocoapods.org/pods/Flashback)
 [![Language](https://img.shields.io/badge/language-swift5.0-ff69b4)](https://cocoapods.org/pods/Flashback)
@@ -34,22 +34,20 @@ pod 'Flashback'
 ## Get start
 
 1. 启用（必要）
-
 ```swift
 import Flashback
 
+// 禁用系统提供的手势返回
+navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+
+// 启用闪回
 FlashbackManager.shared.isEnable = true
 // 指定目标window（有默认值）
 FlashbackManager.shared.targetWindow = window
 
-// 禁用系统提供的手势返回
-navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 ```
 
-
-
 2. 可配置
-
 ```swift
 var config = FlashbackConfig.default
 // 左右侧启用
@@ -78,10 +76,7 @@ config.ignoreTopHeight = 150
 FlashbackManager.shared.config = config
 ```
 
-
-
 3. 可重写返回逻辑
-
 ```swift
 extension ViewController {
     /// 重写返回
@@ -133,7 +128,7 @@ FlashbackManager.shared.addFlahback(alert) { [weak alert] in
 ```
 
 **注意说明**：
-- 在`backMode`为`normal`时，执行顺序为：`preFlashback` -> `backStack` -> `UIViewController(pop | dismiss)`，所以如果弹窗后，弹窗不消失，再弹出`UIViewController`，会出现问题
+- 在`backMode`为`normal`时，执行顺序为：`preFlashback` -> `backStack` -> `backAction`，所以如果弹窗后，弹窗不消失，再弹出`UIViewController`，会出现问题
 - 若`target`为`nil`，则会移除顶项，递归继续执行返回，闭包返回为`true`时执行完移除，为`false`不移除。
 - 一定要注意`target`的生命周期，若`target`产生强应用未被及时释放，则会导致返回出错。若您的`target`不需要被释放，您可以选择在它消失时手动调用`FlashbackManager.shared.backStack.removeLast()`
 
@@ -151,6 +146,10 @@ NotificationCenter.default.addObserver(forName: FlashbackManager.FlashbackNotifi
 ```
 
 ## 更新日志
+### 1.3.1
+1. 增加键盘弹出监听，您可以选择在返回之前先退出键盘
+2. 优化代码
+
 ### 1.3.0
 1. 暴露获取当前控制器方法，可自定义实现
 2. 暴露控制器返回动作，可自定义实现
@@ -162,9 +161,7 @@ NotificationCenter.default.addObserver(forName: FlashbackManager.FlashbackNotifi
 1. 左右两侧有一部分像素用于了侧滑返回判断，所以不可使用，可通过修改triggerRange来改变触发范围大小。
 
 ## Author
-
 可通过邮件的方式联系我： 664454335@qq.com
 
 ## License
-
 Flashback is available under the MIT license. See the LICENSE file for more info.

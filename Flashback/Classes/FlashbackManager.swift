@@ -8,6 +8,7 @@
 import UIKit
 
 // MARK: 闪回管理器
+
 /// 闪回管理器
 @objc public class FlashbackManager: NSObject {
     public typealias BackAction = FlashbackItem.BackAction
@@ -16,7 +17,7 @@ import UIKit
     @objc public static let shared: FlashbackManager = .init()
 
     override private init() {}
-    
+
     /// 是否可用
     @objc public var isEnable = false {
         didSet {
@@ -48,24 +49,25 @@ import UIKit
         }
         return window
     }()
-    
+
     /// 当前控制器
     @objc public var currentVC: (() -> UIViewController?) = {
         let rootVC = FlashbackManager.shared.targetWindow?.rootViewController
         return FlashbackManager.topVC(of: rootVC)
     }
-    
+
     /// 返回动作
-    @objc public var backAction: ((_ currentVC: UIViewController) -> ()) = { currentVC in
+    @objc public var backAction: ((UIViewController) -> Void) = { currentVC in
         if currentVC.navigationController?.topViewController == currentVC,
-           currentVC.navigationController?.viewControllers.count ?? 0 > 1 {
+           currentVC.navigationController?.viewControllers.count ?? 0 > 1
+        {
             // pop
             currentVC.navigationController?.popViewController(animated: true)
         } else {
             if currentVC.presentingViewController == nil {
                 // pop
                 currentVC.navigationController?.popViewController(animated: true)
-            }else {
+            } else {
                 // dismiss
                 currentVC.dismiss(animated: true)
             }
@@ -73,13 +75,13 @@ import UIKit
     }
 
     /// 闪回前置，返回true继续向下执行，返回false终止
-    @objc public var preFlashback: BackAction?
+    @objc public var preFlashback: (() -> Bool)?
+
+    /// 键盘是否弹出（可在preFlashback判断，决定是否先隐藏键盘，再退出）
+    @objc public var showKeyboard: Bool = false
 
     /// 返回栈
     public var backStack: [FlashbackItem] = []
-    
-    /// 键盘是否展示（可在preFlashback判断，决定是否先隐藏键盘，再退出）
-    @objc var showKeyboard: Bool = false
 
     /// 指示器窗口
     lazy var backWindow = FlashbackWindow(frame: UIScreen.main.bounds)
@@ -101,7 +103,6 @@ import UIKit
                 self.monitorKeyboard(false)
             }
         }
-        
     }
 
     /// 添加返回栈
@@ -161,10 +162,10 @@ import UIKit
         }
         return viewController
     }
-    
+
     /// 监控键盘
     func monitorKeyboard(_ isMonitor: Bool) {
-        let notify: NotificationCenter = NotificationCenter.default
+        let notify = NotificationCenter.default
         if isMonitor {
             notify.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: nil) { [weak self] _ in
                 guard let `self` = self else { return }
@@ -174,10 +175,9 @@ import UIKit
                 guard let `self` = self else { return }
                 self.showKeyboard = false
             }
-        }else {
+        } else {
             notify.removeObserver(self, name: UIResponder.keyboardDidShowNotification, object: nil)
             notify.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
         }
-        
     }
 }

@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = 'Flashback'
-  s.version          = '1.3.0'
-  s.summary          = 'iOS仿Android手势返回组件'
+  s.version          = '1.3.1'
+  s.summary          = '超强大、超好用、超顺滑的iOS手势返回'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
