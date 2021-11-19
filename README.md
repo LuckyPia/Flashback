@@ -15,7 +15,6 @@
 </table>
 
 ## 前言
-
 iOS自带的侧滑手势返回很难用有木有，而且只能从左侧返回，因为不是系统级别，也不是强制使用，还有很多App还不支持，只能羡慕Android的手势返回。为了解决该问题而制作的该库，还是希望苹果有一天能够带来系统级别的手势返回。
 
 ## Demo
@@ -32,7 +31,6 @@ pod 'Flashback'
 ```
 
 ## Get start
-
 1. 启用（必要）
 ```swift
 import Flashback
@@ -115,7 +113,7 @@ extension AlertView: FlashbackProtocol {
 
 ```
 
-5. 可自定义返回栈（页面弹框...）
+5. 可自定义返回栈（不建议使用）
 ```swift
 let alert = AlertView()
 alert.show()
@@ -160,7 +158,7 @@ NotificationCenter.default.addObserver(forName: FlashbackManager.FlashbackNotifi
 ## Existing problems
 1. 左右两侧有一部分像素用于了侧滑返回判断，所以不可使用，可通过修改triggerRange来改变触发范围大小。
 
-## Author
+## Contact me
 可通过邮件的方式联系我： 664454335@qq.com
 
 ## License
