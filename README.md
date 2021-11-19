@@ -150,9 +150,16 @@ NotificationCenter.default.addObserver(forName: FlashbackManager.FlashbackNotifi
 }
 ```
 
-## Existing problems
+## 更新日志
+### 1.3.0
+1. 暴露获取当前控制器方法，可自定义实现
+2. 暴露控制器返回动作，可自定义实现
 
-1. 左右两侧有一部分像素用于了侧滑返回判断，所以不可点击，可通过修改triggerRange来改变触发范围大小。
+### 1.2.9
+1. 优化控制器返回逻辑
+
+## Existing problems
+1. 左右两侧有一部分像素用于了侧滑返回判断，所以不可使用，可通过修改triggerRange来改变触发范围大小。
 
 ## Author
 

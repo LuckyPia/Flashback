@@ -48,6 +48,29 @@ import UIKit
         }
         return window
     }()
+    
+    /// 当前控制器
+    @objc public var currentVC: (() -> UIViewController?) = {
+        let rootVC = FlashbackManager.shared.targetWindow?.rootViewController
+        return FlashbackManager.topVC(of: rootVC)
+    }
+    
+    /// 返回动作
+    @objc public var backAction: ((_ currentVC: UIViewController) -> ()) = { currentVC in
+        if currentVC.navigationController?.topViewController == currentVC,
+           currentVC.navigationController?.viewControllers.count ?? 0 > 1 {
+            // pop
+            currentVC.navigationController?.popViewController(animated: true)
+        } else {
+            if currentVC.presentingViewController == nil {
+                // pop
+                currentVC.navigationController?.popViewController(animated: true)
+            }else {
+                // dismiss
+                currentVC.dismiss(animated: true)
+            }
+        }
+    }
 
     /// 闪回前置，返回true继续向下执行，返回false终止
     @objc public var preFlashback: BackAction?
@@ -119,12 +142,6 @@ import UIKit
             // 一切交由通知接管
             NotificationCenter.default.post(name: FlashbackManager.FlashbackNotificationName, object: nil)
         }
-    }
-
-    /// 当前控制器
-    @objc public func currentVC() -> UIViewController? {
-        let vc = targetWindow?.rootViewController
-        return FlashbackManager.topVC(of: vc)
     }
 
     /// 递归查找最顶级视图

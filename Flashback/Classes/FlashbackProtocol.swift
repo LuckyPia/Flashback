@@ -20,19 +20,6 @@ import UIKit
 /// 闪回代理默认实现
 extension UIViewController: FlashbackProtocol {
     open func onFlashback() {
-        
-        if navigationController?.topViewController == self,
-           navigationController?.viewControllers.count ?? 0 > 1 {
-            // pop
-            navigationController?.popViewController(animated: true)
-        } else {
-            if presentingViewController == nil {
-                // pop
-                navigationController?.popViewController(animated: true)
-            }else {
-                // dismiss
-                dismiss(animated: true)
-            }
-        }
+        FlashbackManager.shared.backAction(self)
     }
 }
