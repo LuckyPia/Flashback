@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = UINavigationController(rootViewController: ViewController())
         window?.makeKeyAndVisible()
-
+        
         FlashbackManager.shared.config = FlashbackConfig.default
         FlashbackManager.shared.isEnable = true
         FlashbackManager.shared.targetWindow = window
