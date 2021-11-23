@@ -15,9 +15,6 @@ class ViewController: UIViewController {
     
     lazy var items: [ItemType] = {
         var list = ItemType.allCases
-        if self.presentingViewController != nil {
-            list.removeFirst()
-        }
         return list
     }()
 
@@ -247,7 +244,7 @@ extension ViewController {
     }
 
     func onPresent() {
-        present(ViewController(), animated: true)
+        present(UINavigationController(rootViewController: ViewController()), animated: true)
     }
     
     func onIntercept() {

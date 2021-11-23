@@ -14,10 +14,6 @@ import UIKit
     @objc public var backMode: BackMode = .normal
     /// 样式
     @objc public var style: FlashbackStyle = .black
-    /// 是否模糊
-    @objc public var isBlur: Bool = false
-    /// 模糊
-    @objc public var blurStyle: UIBlurEffect.Style = .dark
     /// 启用位置
     public var enablePositions: [Position] = [.left, .right]
     /// 触发范围

@@ -42,8 +42,10 @@ class FlashbackView: UIView {
         didSet {
             setImageView()
             drawCurve()
-            // 震动
+            // 开始震动
             if config.vibrateEnable && oldValue < config.minWidth && indicatorWidth >= config.minWidth {
+                // 记录开始震动时间
+                startVibrateTimeInterval = Date().timeIntervalSince1970
                 UIImpactFeedbackGenerator(style: config.vibrateStyle).impactOccurred()
             }
         }
@@ -65,18 +67,6 @@ class FlashbackView: UIView {
         panGesture.minimumNumberOfTouches = 1
         panGesture.maximumNumberOfTouches = 1
         return panGesture
-    }()
-
-    /// 内容视图
-    lazy var contentView: UIView = {
-        let view = UIView()
-        return view
-    }()
-
-    /// 毛玻璃视图
-    lazy var blurView: UIVisualEffectView = {
-        let view = UIVisualEffectView(effect: UIBlurEffect(style: config.blurStyle))
-        return view
     }()
 
     /// 形状
@@ -115,20 +105,17 @@ class FlashbackView: UIView {
 
     func makeUI() {
         isUserInteractionEnabled = true
-
-        addSubview(contentView)
-        contentView.addSubview(blurView)
-        contentView.addSubview(imageView)
+        
+        layer.insertSublayer(shapeLayer, at: 0)
+        addSubview(imageView)
         addGestureRecognizer(panGesture)
-        contentView.layer.mask = shapeLayer
+        
         reinitIndicator()
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        contentView.frame = bounds
-        blurView.frame = bounds
-      
+
         setTriggerArea()
     }
 
@@ -137,21 +124,17 @@ class FlashbackView: UIView {
         imageView.frame = CGRect(origin: .zero, size: config.indicatorSize)
         switch config.style {
         case .white:
-            contentView.backgroundColor = .white.withAlphaComponent(config.opacity)
+            shapeLayer.fillColor = UIColor.white.cgColor
+            shapeLayer.opacity = Float(config.opacity)
             imageView.tintColor = .black
         case .black:
-            contentView.backgroundColor = .black.withAlphaComponent(config.opacity)
+            shapeLayer.fillColor = UIColor.black.cgColor
+            shapeLayer.opacity = Float(config.opacity)
             imageView.tintColor = .white
         case .custom:
-            contentView.backgroundColor = config.backgroundColor.withAlphaComponent(config.opacity)
+            shapeLayer.fillColor = config.backgroundColor.cgColor
+            shapeLayer.opacity = Float(config.opacity)
             imageView.tintColor = config.indicatorColor
-        }
-
-        if config.isBlur {
-            blurView.isHidden = false
-            blurView.effect = UIBlurEffect(style: config.blurStyle)
-        } else {
-            blurView.isHidden = true
         }
     }
 
@@ -169,7 +152,7 @@ class FlashbackView: UIView {
                 path.append(rightPath)
             }
             triggerAreaShapeLayer.path = path.cgPath
-            
+
             if triggerAreaShapeLayer.superlayer == nil {
                 layer.addSublayer(triggerAreaShapeLayer)
             }
@@ -196,8 +179,9 @@ class FlashbackView: UIView {
         let offsetX = panGes.translation(in: self).x
         switch panGes.state {
         case .began:
-            startVibrateTimeInterval = Date().timeIntervalSince1970
+            // 释放消失动画控制器
             releaseDisplayLink()
+            
             let locationPoint = panGes.location(in: panGes.view)
             if locationPoint.x < bounds.width / 2 {
                 startY = locationPoint.y
@@ -214,12 +198,7 @@ class FlashbackView: UIView {
             needBack()
 
             // 指示器消失动画
-            releaseDisplayLink()
-            frameReduceWidth = indicatorWidth / (60 * config.dismissDuartion)
-            displayLink = CADisplayLink(target: self, selector: #selector(cancelDrag))
-            displayLink?.preferredFramesPerSecond = 60
-            displayLink?.isPaused = false
-            displayLink?.add(to: .current, forMode: .common)
+            startDismissAnimation()
         default:
             if startPosition == .left {
                 self.offsetX = max(0, offsetX)
@@ -275,8 +254,20 @@ class FlashbackView: UIView {
         shapeLayer.path = path.cgPath
     }
 
+    /// 开始消失动画
+    func startDismissAnimation() {
+        // 释放之前的动画
+        releaseDisplayLink()
+        
+        frameReduceWidth = indicatorWidth / (60 * config.dismissDuartion)
+        displayLink = CADisplayLink(target: self, selector: #selector(handleDisplayLink))
+        displayLink?.preferredFramesPerSecond = 60
+        displayLink?.isPaused = false
+        displayLink?.add(to: .current, forMode: .common)
+    }
+    
     /// 取消拖拽
-    @objc func cancelDrag() {
+    @objc func handleDisplayLink() {
         indicatorWidth -= frameReduceWidth
         if indicatorWidth <= 0 {
             releaseDisplayLink()
@@ -296,9 +287,9 @@ class FlashbackView: UIView {
     func needBack() {
         // 大于最小宽度，才执行返回
         if indicatorWidth >= config.minWidth {
-            // 震动，从开始间隔大于0.15秒才有结束震动
+            // 结束震动，从开始间隔大于0.1秒才有结束震动
             if config.vibrateEnable &&
-                Date().timeIntervalSince1970 - startVibrateTimeInterval > 0.15
+                Date().timeIntervalSince1970 - startVibrateTimeInterval > 0.1
             {
                 UIImpactFeedbackGenerator(style: config.vibrateStyle).impactOccurred()
             }
