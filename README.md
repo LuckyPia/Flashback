@@ -1,11 +1,11 @@
 # Flashback - 超强大、超好用、超顺滑的iOS手势返回
-
 [![iOS Version](https://img.shields.io/badge/iOS-10.0%2B-blueviolet)](https://cocoapods.org/pods/Flashback)
 [![Language](https://img.shields.io/badge/swift-5.0-ff501e)](https://cocoapods.org/pods/Flashback)
 [![Flashback Version](https://img.shields.io/cocoapods/v/Flashback.svg?style=flat)](https://cocoapods.org/pods/Flashback)
 [![License](https://img.shields.io/cocoapods/l/Flashback.svg?style=flat)](https://cocoapods.org/pods/Flashback)
 
 ## 效果图
+
 <table>
     <tr>
         <td><img src="./Images/IMG_1595.jpg" /></td>
@@ -14,14 +14,12 @@
 </table>
 
 ## 前言
-iOS自带的手势返回就像一坨巧克力味的屎，你永远不知道下一颗屎什么味儿的。因为不是系统级别，也不是强制使用，仅左侧可用，还有很多App不支持，导致了iOS App返回乱象。该库正是为了解决该问题而制作的！
+iOS自带的手势返回就像巧克力味的屎，你永远不知道下一颗是什么味儿。因为不是系统级别，也不是强制App使用，而且仅左侧可用，还有很多App不支持，导致了iOS App返回乱象。该库正是为了解决该问题而制作的，让您的App一路顺滑返回到底。
 
 ## Demo
-
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
 ## Install
-
 Flashback is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
