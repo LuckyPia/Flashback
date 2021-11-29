@@ -75,7 +75,7 @@ import UIKit
     }
 
     /// 闪回前置，返回true继续向下执行，返回false终止
-    @objc public var preFlashback: ((_ targetWindw: UIWindow?, _ currentVC: UIViewController?, _ showKeyboard: Bool) -> Bool)?
+    @objc public var preFlashback: ((_ targetWindow: UIWindow?, _ currentVC: UIViewController?, _ showKeyboard: Bool) -> Bool)?
 
     /// 键盘是否弹出（可在preFlashback判断，决定是否先隐藏键盘，再退出）
     @objc public var showKeyboard: Bool = false

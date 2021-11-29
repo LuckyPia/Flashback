@@ -141,6 +141,9 @@ NotificationCenter.default.addObserver(forName: FlashbackManager.FlashbackNotifi
 ```
 
 ## 更新日志
+### 1.3.4
+1. 单词拼写纠错
+
 ### 1.3.3
 1. 优化回调方法，提高性能
 
