@@ -252,20 +252,21 @@ extension ViewController {
         if FlashbackManager.shared.preFlashback != nil {
             FlashbackManager.shared.preFlashback = nil
         } else {
-            FlashbackManager.shared.preFlashback = {
-                if let alertVC = FlashbackManager.shared.currentVC() as? UIAlertController,
-                   alertVC.title == "提示"
-                {
+            FlashbackManager.shared.preFlashback = { targetWindow, currentVC, showKeyboard in
+                // 有弹窗就不作任何操作
+                if let alertVC = currentVC as? UIAlertController,
+                   alertVC.title == "提示" {
                     return false
                 }
 
+                // 无弹窗就弹出弹窗
                 let alertVC = UIAlertController(title: "提示", message: "拦截返回成功", preferredStyle: .alert)
                 let action = UIAlertAction(title: "确定", style: .default) { [weak alertVC] _ in
                     guard let alertVC = alertVC else { return }
                     alertVC.dismiss(animated: true)
                 }
                 alertVC.addAction(action)
-                FlashbackManager.shared.currentVC()?.present(alertVC, animated: true)
+                currentVC?.present(alertVC, animated: true)
 
                 return false
             }

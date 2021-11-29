@@ -141,6 +141,9 @@ NotificationCenter.default.addObserver(forName: FlashbackManager.FlashbackNotifi
 ```
 
 ## 更新日志
+### 1.3.3
+1. 优化回调方法，提高性能
+
 ### 1.3.2
 1. 移除毛玻璃模糊效果，提高性能
 

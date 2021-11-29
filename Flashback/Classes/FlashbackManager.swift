@@ -51,31 +51,31 @@ import UIKit
     }()
 
     /// 当前控制器
-    @objc public var currentVC: (() -> UIViewController?) = {
-        let rootVC = FlashbackManager.shared.targetWindow?.rootViewController
+    @objc public var currentVC: ((_ targetWindow: UIWindow?) -> UIViewController?) = { targetWindow in
+        let rootVC = targetWindow?.rootViewController
         return FlashbackManager.topVC(of: rootVC)
     }
 
     /// 返回动作
-    @objc public var backAction: ((UIViewController) -> Void) = { currentVC in
-        if currentVC.navigationController?.topViewController == currentVC,
-           currentVC.navigationController?.viewControllers.count ?? 0 > 1
+    @objc public var backAction: ((UIViewController) -> Void) = { vc in
+        if vc.navigationController?.topViewController == vc,
+           vc.navigationController?.viewControllers.count ?? 0 > 1
         {
             // pop
-            currentVC.navigationController?.popViewController(animated: true)
+            vc.navigationController?.popViewController(animated: true)
         } else {
-            if currentVC.presentingViewController == nil {
+            if vc.presentingViewController == nil {
                 // pop
-                currentVC.navigationController?.popViewController(animated: true)
+                vc.navigationController?.popViewController(animated: true)
             } else {
                 // dismiss
-                currentVC.dismiss(animated: true)
+                vc.dismiss(animated: true)
             }
         }
     }
 
     /// 闪回前置，返回true继续向下执行，返回false终止
-    @objc public var preFlashback: (() -> Bool)?
+    @objc public var preFlashback: ((_ targetWindw: UIWindow?, _ currentVC: UIViewController?, _ showKeyboard: Bool) -> Bool)?
 
     /// 键盘是否弹出（可在preFlashback判断，决定是否先隐藏键盘，再退出）
     @objc public var showKeyboard: Bool = false
@@ -120,7 +120,8 @@ import UIKit
             // 闪回前置，返回true继续向下执行，返回false终止
             // 您可以统一处理弹窗、收起键盘、提交日志等等...
             // 巧妙使用该回调，可以减小代码耦合度
-            if let flag = preFlashback?(), !flag {
+            let currentVC = currentVC(targetWindow)
+            if preFlashback?(targetWindow, currentVC, showKeyboard) == false {
                 return
             }
             // 如果backStack栈顶有数据，则执行backStack的栈顶
@@ -137,7 +138,7 @@ import UIKit
                 }
             } else {
                 // 获取当前VC，执行FlashbackProtocol协议实现的onFlashback()方法（该方法有默认实现）
-                currentVC()?.onFlashback()
+                currentVC?.onFlashback()
             }
         case .notify:
             // 一切交由通知接管
