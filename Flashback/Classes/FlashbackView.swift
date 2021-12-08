@@ -46,7 +46,7 @@ class FlashbackView: UIView {
             if config.vibrateEnable && oldValue < config.minWidth && indicatorWidth >= config.minWidth {
                 // 记录开始震动时间
                 startVibrateTimeInterval = Date().timeIntervalSince1970
-                UIImpactFeedbackGenerator(style: config.vibrateStyle).impactOccurred()
+                self.vibrate()
             }
         }
     }
@@ -282,6 +282,11 @@ class FlashbackView: UIView {
             displayLink = nil
         }
     }
+    
+    /// 震动
+    func vibrate() {
+        UIImpactFeedbackGenerator(style: config.vibrateStyle).impactOccurred()
+    }
 
     /// 判断是否需要返回
     func needBack() {
@@ -291,7 +296,7 @@ class FlashbackView: UIView {
             if config.vibrateEnable &&
                 Date().timeIntervalSince1970 - startVibrateTimeInterval > 0.1
             {
-                UIImpactFeedbackGenerator(style: config.vibrateStyle).impactOccurred()
+                self.vibrate()
             }
             doBack()
         }

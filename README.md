@@ -86,9 +86,9 @@ extension ViewController {
 ```swift
 // 举例：判断VC上的视图是否满足某个协议，若满足，则执行其返回方法
 // 不是一定要满足FlashbackProtocol协议，你可以选择自己的协议，更好的减少代码侵入
-FlashbackManager.shared.preFlashback = {
+FlashbackManager.shared.preFlashback = { targetWindow, currentVC, showKeyboard in
     // 返回true继续向下执行正常逻辑，返回false终止
-    if let alertList = FlashbackManager.shared.currentVC()?.view.subviews.filter({ $0 is FlashbackProtocol }),
+    if let alertList = currentVC?.view.subviews.filter({ $0 is FlashbackProtocol }),
         let lastAlert = alertList.last as? FlashbackProtocol {
         lastAlert.onFlashback()
         // 返回false不再继续往下执行
@@ -141,6 +141,9 @@ NotificationCenter.default.addObserver(forName: FlashbackManager.FlashbackNotifi
 ```
 
 ## 更新日志
+### 1.3.5
+1. 优化闪回配置
+
 ### 1.3.4
 1. 单词拼写纠错
 

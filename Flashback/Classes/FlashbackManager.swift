@@ -14,7 +14,7 @@ import UIKit
     public typealias BackAction = FlashbackItem.BackAction
 
     /// 单例
-    @objc public static let shared: FlashbackManager = .init()
+    @objc public static let shared = FlashbackManager()
 
     override private init() {}
 

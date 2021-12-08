@@ -37,15 +37,19 @@ import UIKit
     /// 指示器图片
     @objc public var indicatorImage: UIImage? = rightArrowImage {
         didSet {
-            leftIndicatorImage = indicatorImage?.withRenderingMode(.alwaysTemplate)
-            rightIndicatorImage = UIImage(cgImage: indicatorImage?.cgImage ?? UIImage().cgImage!, scale: 1, orientation: .upMirrored).withRenderingMode(.alwaysTemplate)
+            if let indicatorImage = indicatorImage {
+                leftIndicatorImage = indicatorImage.withRenderingMode(.alwaysTemplate)
+                rightIndicatorImage =
+                UIImage(cgImage: indicatorImage.cgImage ?? UIImage().cgImage!, scale: 1, orientation: .upMirrored).withRenderingMode(.alwaysTemplate)
+            }
         }
     }
 
     /// 左边指示器图片
-    @objc public var leftIndicatorImage: UIImage? = rightArrowImage?.withRenderingMode(.alwaysTemplate)
+    @objc public var leftIndicatorImage: UIImage?
     /// 右边指示器图片
-    @objc public var rightIndicatorImage: UIImage? = UIImage(cgImage: rightArrowImage!.cgImage!, scale: 1, orientation: .upMirrored).withRenderingMode(.alwaysTemplate)
+    @objc public var rightIndicatorImage: UIImage?
+    
     /// 指示器图片大小
     @objc public var indicatorSize: CGSize = .init(width: 15, height: 15)
     /// 指示器图片颜色
@@ -66,6 +70,9 @@ import UIKit
     /// 默认配置
     @objc public static var `default`: FlashbackConfig {
         let config = FlashbackConfig()
+        if let indicatorImage = rightArrowImage {
+            config.indicatorImage = indicatorImage
+        }
         return config
     }
     
@@ -81,11 +88,11 @@ import UIKit
         let podName = "Flashback"
         url = url.appendingPathComponent("\(podName)")
         url = url.appendingPathExtension("framework")
-        let mainBundle = Bundle(url: url)
-        guard let bundleUrl = mainBundle?.url(forResource: podName, withExtension: "bundle") else { return nil }
-        guard let bundle = Bundle(url: bundleUrl) else { return nil }
-        let image = UIImage(contentsOfFile: bundle.path(forResource: "flashback_right_arrow.png", ofType: nil)!)
-        return image
+        guard let mainBundle = Bundle(url: url),
+              let bundleUrl = mainBundle.url(forResource: podName, withExtension: "bundle"),
+              let bundle = Bundle(url: bundleUrl),
+              let path = bundle.path(forResource: "flashback_right_arrow.png", ofType: nil)  else { return nil }
+        return UIImage(contentsOfFile: path)
     }
 
     /// 返回位置
