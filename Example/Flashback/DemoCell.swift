@@ -12,10 +12,13 @@ import Flashback
 
 class DemoCell: UITableViewCell {
     
+    /// item类型
     var itemType: ItemType = .push
     
+    /// 值改变回调
     var onValueChange: ((CGFloat) -> Void)?
     
+    /// 滑块
     lazy var slider: UISlider = {
         let slider = UISlider()
         slider.addTarget(self, action: #selector(valueChange), for: .valueChanged)
@@ -37,16 +40,19 @@ class DemoCell: UITableViewCell {
         self.accessoryView = slider
     }
     
+    /// 设置数据
     func setData(itemType: ItemType) {
         self.itemType = itemType
     }
     
+    /// 同步数据
     func syncData() {
         self.textLabel?.text = self.itemType.title
     }
 }
 
 extension DemoCell {
+    /// 值改变
     @objc func valueChange(_ sender: UISlider) {
         self.syncData()
         self.onValueChange?(CGFloat(sender.value))

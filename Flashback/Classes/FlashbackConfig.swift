@@ -56,8 +56,8 @@ import UIKit
     @objc public var indicatorColor: UIColor = .white
     /// 消失持续时间（0.1s）
     @objc public var dismissDuartion: CGFloat = 0.1
-    /// 忽略顶部高度
-    @objc public var ignoreTopHeight: CGFloat = 150
+    /// 忽略顶部高度(仅竖屏模式)
+    @objc public var ignoreTopHeight: CGFloat = 200
     /// 震动启用（默认true）
     @objc public var vibrateEnable: Bool = true
     /// 震动强度

@@ -9,7 +9,7 @@
 import Flashback
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: BaseViewController {
     
     var textColor: UIColor = .black
 
@@ -74,8 +74,6 @@ class ViewController: UIViewController {
     }
 
     func makeUI() {
-        /// 禁用系统提供的手势返回
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -97,7 +95,8 @@ class ViewController: UIViewController {
         view.backgroundColor = backgroundColor
         navigationController?.navigationBar.backgroundColor = backgroundColor
         navigationController?.navigationBar.tintColor = textColor
-        navigationController?.navigationBar.barTintColor = textColor
+        navigationController?.navigationBar.barTintColor = backgroundColor
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor]
         if #available(iOS 15.0, *) {
             self.newAppearance.backgroundColor = backgroundColor
             self.newAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: textColor]
@@ -117,7 +116,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         if FlashbackManager.shared.isEnable {
             return items.count
         } else {
-            return 1
+            return 3
         }
     }
 
@@ -252,7 +251,7 @@ extension ViewController {
         if FlashbackManager.shared.preFlashback != nil {
             FlashbackManager.shared.preFlashback = nil
         } else {
-            FlashbackManager.shared.preFlashback = { targetWindow, currentVC, showKeyboard in
+            FlashbackManager.shared.preFlashback = { targetWindow, currentVC in
                 // 有弹窗就不作任何操作
                 if let alertVC = currentVC as? UIAlertController,
                    alertVC.title == "提示" {

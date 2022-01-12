@@ -179,6 +179,7 @@ class FlashbackView: UIView {
         let offsetX = panGes.translation(in: self).x
         switch panGes.state {
         case .began:
+            FlashbackManager.shared.isBacking = true
             // 释放消失动画控制器
             releaseDisplayLink()
             
@@ -194,6 +195,7 @@ class FlashbackView: UIView {
                 imageView.image = config.rightIndicatorImage
             }
         case .cancelled, .ended, .failed:
+            FlashbackManager.shared.isBacking = false
             // 是否需要返回
             needBack()
 
@@ -306,4 +308,30 @@ class FlashbackView: UIView {
     func doBack() {
         FlashbackManager.shared.doBack()
     }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        // 如果正处于返回中，隔绝其他点击事件
+        if FlashbackManager.shared.isBacking {
+            return super.hitTest(point, with: event)
+        }
+        // 是否可操作，是否隐藏，是否透明
+        guard isUserInteractionEnabled, !isHidden, alpha > 0 else {
+            return nil
+        }
+        // 是否可以返回
+        guard FlashbackManager.shared.enable() else {
+            return nil
+        }
+        // 顶部高度忽略
+        let ignoreTopHeight = FlashbackManager.shared.isPortrait ? config.ignoreTopHeight : 0
+        if point.y < ignoreTopHeight {
+            return nil
+        }
+        // 左右触发范围判断
+        if (point.x < config.triggerRange && config.enablePositions.contains(.left)) || (point.x > bounds.width - config.triggerRange && config.enablePositions.contains(.right)) {
+            return super.hitTest(point, with: event)
+        }
+        return nil
+    }
+    
 }
