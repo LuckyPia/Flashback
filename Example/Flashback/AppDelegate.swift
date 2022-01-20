@@ -14,7 +14,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        window = FlashbackWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = NavigationController(rootViewController: ViewController())
         window?.makeKeyAndVisible()
         

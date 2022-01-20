@@ -14,17 +14,19 @@ class NavigationController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        interactivePopGestureRecognizer?.isEnabled = false
+        
         // 从中间滑动返回
-        let target = self.interactivePopGestureRecognizer?.delegate
-        let handler = NSSelectorFromString("handleNavigationTransition:")
-        let pan = UIPanGestureRecognizer(target: target, action: handler)
-        pan.delegate = self
-        self.interactivePopGestureRecognizer?.view?.addGestureRecognizer(pan)
-        self.interactivePopGestureRecognizer?.isEnabled = false
-        weak var weakSelf = self
-        if self.responds(to: #selector(getter: interactivePopGestureRecognizer)) {
-            self.interactivePopGestureRecognizer?.delegate = weakSelf
-        }
+//        let target = self.interactivePopGestureRecognizer?.delegate
+//        let handler = NSSelectorFromString("handleNavigationTransition:")
+//        let pan = UIPanGestureRecognizer(target: target, action: handler)
+//        pan.delegate = self
+//        self.interactivePopGestureRecognizer?.view?.addGestureRecognizer(pan)
+//        self.interactivePopGestureRecognizer?.isEnabled = false
+//        weak var weakSelf = self
+//        if self.responds(to: #selector(getter: interactivePopGestureRecognizer)) {
+//            self.interactivePopGestureRecognizer?.delegate = weakSelf
+//        }
     }
 }
 
